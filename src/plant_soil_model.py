@@ -6,19 +6,14 @@ import scipy.optimize as opt
 import params_constants 
 from params_soil import soil_dict
 import scipy.signal as signal
-import matplotlib.pyplot as plt
 
 
 class Canopy:
-    def __init__(self, A_canopy, Gs_leaf, b_leaf, c_leaf): 
+    def __init__(self, A_canopy, Gs_leaf, c_leaf): 
         self.A_canopy = A_canopy                    # canopy area
         self.Gs_leaf = Gs_leaf                  # max Gs as function of VPD, e.g. a in a*np.exp(-b*x)
-        self.b_leaf = b_leaf                        # parameter in VPD dependence
         self.c_leaf = c_leaf                        # parameter for exponential decay as function of P_leaf
-    
-#     def gmax_leaf(self, VPD):
-#         return self.Gs_leaf*np.exp(-self.b_leaf*VPD)
-    
+     
     def gmax_canopy(self, VPD):
 #         gmax_leaf = self.gmax_leaf(VPD)
         gmax_leaf = self.Gs_leaf
@@ -34,6 +29,7 @@ class Canopy:
         # returns canopy conductance based on specified functional form
         g = self.g_canopy_exponential(P_leaf, VPD)
         return g
+    
 
 class Stem: 
     def __init__(self, L_stem, A_stem, Ksat_stem, P50_stem, a_stem, plc_form=None):

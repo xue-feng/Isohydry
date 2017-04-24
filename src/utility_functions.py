@@ -9,7 +9,7 @@ def import_traits_data():
     sheet = book.sheet_by_name('parameters')
     keys = np.asarray(filter(None, sheet.col_values(0)), dtype='str')
     species = ['JUNI', 'PINE']; sp_coln = [2,4]
-    canopy_keys = ['A_canopy', 'Gs_leaf','b_leaf', 'c_leaf']
+    canopy_keys = ['A_canopy', 'Gs_leaf', 'c_leaf']
     stem_keys = ['L_stem', 'A_stem', 'Ksat_stem', 'a_stem', 'plc_form', 'P50_stem']
     root_keys = ['L_root', 'A_root', 'd_root']
     chap_dict = {}
@@ -33,9 +33,28 @@ def initialize_plant(sp, params, soil_type):
     plant.soil_root = Soil_root(soil_type=soil_type, **root_dict)
     plant.soil = Soil(soil_type)
     return plant
-                       
+
+def get_part(var):
+    if var in ['A_canopy', 'Gs_leaf', 'c_leaf']: return 'canopy_dict'
+    elif var in ['L_stem','A_stem','Ksat_stem','a_stem','P50_stem']: return 'stem_dict'
+    elif var in ['L_root','A_root']: return 'root_dict'
+    
+def initialize_generic_plant(trait_names, params, soil_type):
+    vals = lambda var: params[np.where(var==trait_names)[0][0]]
+    sp = 'generic'
+    canopy_dict = {'A_canopy':vals('A_canopy'),'Gs_leaf':vals('Gs_leaf'),'c_leaf':vals('c_leaf')}
+    stem_dict = {'L_stem':vals('L_stem'), 'A_stem':vals('A_stem'), 'Ksat_stem':vals('Ksat_stem'), 'a_stem':vals('a_stem'), 'P50_stem':vals('P50_stem')}
+    root_dict = {'L_root':vals('L_root'), 'A_root':vals('A_root'), 'd_root':0.0005}
+    
+    plant = Whole_plant(species=sp)
+    plant.canopy = Canopy(**canopy_dict)
+    plant.stem = Stem(**stem_dict)
+    plant.soil_root = Soil_root(soil_type=soil_type, **root_dict)
+    plant.soil = Soil(soil_type)
+    return plant
+                  
 def rho(s, lam, gam, eta, k, sw, sst, s1, Amax, R):
-    if s<=sw: rho_s = 0.0; assm_s = 0.0
+    if s<=sw: rho_s = 0.0; assm_s = 0.0-R
     elif (s>sw)&(s<=sst): rho_s = eta*(s-sw)/(sst-sw); assm_s = Amax*(s-sw)/(sst-sw) - R
     elif (s>sst)&(s<=s1): rho_s = eta; assm_s = Amax-R
     elif (s>s1)&(s<=1.0): rho_s = eta + k*(s-s1)/(1.0-s1); assm_s = Amax-R
@@ -52,6 +71,7 @@ def simulate_s_t(depths, tRun, dt, sInit, lam, gam, eta, k, sw, sst, s1, Amax, R
         Infil_normed = min(R_normed, 1.0-s0)
         ET_L_normed, ASM = rho(s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
         s_out = max(s0 + Infil_normed - dt*(ET_L_normed), sw)
+        # update to next step
         s_t[i] = s_out; s0 = s_out
         assm_t[i] = ASM*dt
     return s_t, assm_t

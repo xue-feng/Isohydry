@@ -1,10 +1,12 @@
-from utility_functions import import_traits_data, initialize_plant, simulate_ps_t
+from utility_functions import import_traits_data, initialize_plant, simulate_ps_t, get_part, initialize_generic_plant
 from params_soil import soil_dict
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
 from scipy import interpolate
 import cPickle as pickle
+from SALib.sample import saltelli
+from SALib.analyze import sobol
 
 # set soil conditions 
 soil_type = 'loamy_sand'
@@ -127,42 +129,6 @@ def initialize_modified_plant(sp, soil_type, part_name, trait_name, trait_val):
     plant_modified = initialize_plant(sp, traits_modified, soil_type)
     return plant_modified
 
-def get_modified_params(sp, part_name, trait_name, trait_arr, param_name, VPD):
-    params_arr = np.zeros((len(trait_arr), 3))
-    for i, trait_val in enumerate(trait_arr): 
-        print i, trait_val
-        modified_plant = initialize_modified_plant(sp, soil_type, part_name, trait_name, trait_val)
-        if param_name=='Es': func = modified_plant.get_Es_params
-        elif param_name=='sigma': func = modified_plant.get_sigma
-        params_arr[i,:] = func(VPD,s) 
-    return params_arr
-
-def plot_param_trait_dependence(plant, param_name, VPD):
-    # setting up parameter ranges 
-    shift_range = np.linspace(0.1, 2.0, 30)
-    sp = plant.species
-    
-    P50 = plant.stem.P50_stem
-    c_leaf = plant.canopy.c_leaf; Pg12 = 1.0/c_leaf * np.log(0.12)
-    A_canopy = plant.canopy.A_canopy
-    Zr = plant.soil_root.L_root
-    
-    P50_arr = shift_range*P50
-    Pg12_arr = shift_range*Pg12
-    Acan_arr = shift_range*A_canopy
-    Zr_arr = shift_range*Zr
-        
-    plt.figure(figsize=(6,4.5))
-    Params_cleaf = get_modified_params(sp, 'canopy_dict','c_leaf', c_leaf/shift_range, param_name, VPD)
-    Params_P50 = get_modified_params(sp,'stem_dict', 'P50_stem', P50_arr, param_name, VPD)
-    Params_Acanopy = get_modified_params(sp, 'canopy_dict','A_canopy', Acan_arr, param_name, VPD)
-    Params_Lroot = get_modified_params(sp,'root_dict','L_root', Zr_arr, param_name, VPD)
-    plt.plot(P50_arr, Params_P50[:,2], lw=1, label='P50') # Emax
-    plt.plot(Pg12_arr, Params_cleaf[:,2], lw=1, label='Pg12') # Emax
-    plt.plot(Acan_arr, Params_Acanopy[:,2], lw=1, label='Acanopy') # Emax
-    plt.plot(Zr_arr, Params_Lroot[:,2], lw=1, label='Zr') # Emax
-    plt.legend(loc=1)
-
 def get_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
     plant = initialize_plant(sp, traits, soil_type)
     
@@ -216,6 +182,7 @@ def plot_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
     plt.plot(tmax_arr, metrics_iso[:,1]); plt.plot(tmax_arr, metrics_aniso[:,1])
     plt.xlim(0,np.max(tmax_arr)); plt.xlabel('Duration (days)'); plt.ylabel('"Carbon gain"')
     plt.tight_layout()
+
     
 # visualize pine and juniper performance under intensity and duration 
 # performance gauged by hydraulic risk and reduction in Assimilation
@@ -266,9 +233,6 @@ gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,1
 # plot_crits(pine_plant,50)
 # plt.show()
 
-
-# plot_param_trait_dependence(juni_plant, 'sigma', VPD=2.0)
-# plt.show()
 
 # dur_range = np.linspace(0,240,10)
 # plot_iso_aniso_performance(sp='JUNI', VPD=0.5, tmax_arr=dur_range, iso_xf=0.5, aniso_xf=2.0, plc=0.5)
