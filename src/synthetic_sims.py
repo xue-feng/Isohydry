@@ -94,7 +94,7 @@ def main():
     
     ''' generate samples '''
     t0=time.time()
-    Y, params = generate_samples(sp,n_runs=100, VPD=VPD,tmax=tmax)
+    Y, params = generate_samples(sp,n_runs=10, VPD=VPD,tmax=tmax)
     t1=time.time(); print (t1-t0)/60.0
     
 #     '''open samples'''
