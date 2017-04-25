@@ -103,21 +103,21 @@ def main():
 #         Y = pickle.load(handle)
 #     with open('./Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'rb') as handle:
 #         params = pickle.load(handle)
-    var_dict = {'A_canopy':0,'Gs_leaf':1,'c_leaf':2,'L_stem':3,'A_stem':4,'Ksat_stem':5,'a_stem':6,'P50_stem':7,'L_root':8,'A_root':9,'Rmax':10}
-     
-    beta = (-2.30259/params[:, var_dict['c_leaf']])/params[:, var_dict['P50_stem']] # convert from c_leaf to P10_leaf
-    delta = Ps/params[:, var_dict['P50_stem']]
-    Sd, rhoH2O, Mw = params_constants.Sd, params_constants.rhoH2O, params_constants.Mw
-    nu, rhoH2O, g = params_constants.nu, params_constants.rhoH2O, params_constants.g
-    Sd, rhoH2O = params_constants.Sd, params_constants.rhoH2O
-    d_root = 0.0005
-    gc_max = params[:,var_dict['Gs_leaf']]*params[:,var_dict['A_canopy']]*Mw*Sd/(rhoH2O)
-    gx_max = params[:,var_dict['Ksat_stem']]*Sd*params[:,var_dict['A_stem']]/(params[:,var_dict['L_stem']]*rhoH2O)
-    gs_max = nu*Ks/(rhoH2O*g)*np.sqrt(params[:,var_dict['A_root']]/(d_root*params[:,var_dict['L_root']]))
-    kappa = gs_max/gx_max; 
-    f = gc_max*VPD/(gx_max*params[:, var_dict['P50_stem']])
-    HR = Y[:,0]
-    Assm = Y[:,1]
+#     var_dict = {'A_canopy':0,'Gs_leaf':1,'c_leaf':2,'L_stem':3,'A_stem':4,'Ksat_stem':5,'a_stem':6,'P50_stem':7,'L_root':8,'A_root':9,'Rmax':10}
+#      
+#     beta = (-2.30259/params[:, var_dict['c_leaf']])/params[:, var_dict['P50_stem']] # convert from c_leaf to P10_leaf
+#     delta = Ps/params[:, var_dict['P50_stem']]
+#     Sd, rhoH2O, Mw = params_constants.Sd, params_constants.rhoH2O, params_constants.Mw
+#     nu, rhoH2O, g = params_constants.nu, params_constants.rhoH2O, params_constants.g
+#     Sd, rhoH2O = params_constants.Sd, params_constants.rhoH2O
+#     d_root = 0.0005
+#     gc_max = params[:,var_dict['Gs_leaf']]*params[:,var_dict['A_canopy']]*Mw*Sd/(rhoH2O)
+#     gx_max = params[:,var_dict['Ksat_stem']]*Sd*params[:,var_dict['A_stem']]/(params[:,var_dict['L_stem']]*rhoH2O)
+#     gs_max = nu*Ks/(rhoH2O*g)*np.sqrt(params[:,var_dict['A_root']]/(d_root*params[:,var_dict['L_root']]))
+#     kappa = gs_max/gx_max; 
+#     f = gc_max*VPD/(gx_max*params[:, var_dict['P50_stem']])
+#     HR = Y[:,0]
+#     Assm = Y[:,1]
 #     
 #     beta_norm = beta/(max(beta)-min(beta))
 #     delta_norm = delta/(max(delta)-min(delta))
@@ -128,18 +128,22 @@ def main():
 #     # plt.scatter(kappa_norm, f_norm, c=HR, s=50*HR+10, alpha=0.5, lw=0)
 #     plt.show()
     
-    ''' plotting sample results '''
-    fig = plt.figure(figsize=(16,4))
-    out = Assm; plt.suptitle('C assimilation')
-    # out = HR; plt.suptitle('Hydraulic risk')
-    ax = fig.add_subplot(141); plot_ind(beta, out, 'P50/Pg12') 
-    ax = fig.add_subplot(142); plot_ind(delta, out, 'Psat_soil/P50')
-    ax = fig.add_subplot(143); plot_ind(kappa, out, 'gmax_stem/gmax_root')
-    ax = fig.add_subplot(144); plot_ind(f, out, '(gmax_stem*P50)/gmax_canopy*VPD')
-    plt.tight_layout()
-    plt.savefig('./Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_Assm.pdf')
+#     ''' plotting sample results '''
+#     fig = plt.figure(figsize=(16,4))
+#     out = Assm; plt.suptitle('C assimilation')
+#     # out = HR; plt.suptitle('Hydraulic risk')
+#     ax = fig.add_subplot(141); plot_ind(beta, out, 'P50/Pg12') 
+#     ax = fig.add_subplot(142); plot_ind(delta, out, 'Psat_soil/P50')
+#     ax = fig.add_subplot(143); plot_ind(kappa, out, 'gmax_stem/gmax_root')
+#     ax = fig.add_subplot(144); plot_ind(f, out, '(gmax_stem*P50)/gmax_canopy*VPD')
+#     plt.tight_layout()
+#     plt.savefig('./Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_Assm.pdf')
+
+def test():
+    return 'testing!'
+    
     
 if __name__ == '__main__':
-    main()
-
+#     main()
+    test()
 
