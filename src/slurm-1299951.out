@@ -1,0 +1,9 @@
+Already on 'master'
+Traceback (most recent call last):
+  File "synthetic_sims.py", line 1, in <module>
+    from utility_functions import import_traits_data, simulate_ps_t, get_part, initialize_generic_plant
+  File "/global/home/users/xuefeng/src/utility_functions.py", line 1, in <module>
+    import xlrd
+ImportError: No module named xlrd
+/var/spool/slurmd/job1299951/slurm_script: line 18: unexpected EOF while looking for matching `"'
+/var/spool/slurmd/job1299951/slurm_script: line 23: syntax error: unexpected end of file
