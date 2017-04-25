@@ -14,8 +14,8 @@
 ## Command(s) to run:
 git checkout master
 x=$(python synthetic_sims.py)
-DATE=`date +%Y-%m-%d:%H:%M:%S`
-TITLESTR=“SOBOL_$DATE"
+DATE='date +%Y-%m-%d:%H:%M:%S'
+TITLESTR='SOBOL_$DATE'
 sendmail xue.feng@berkeley.edu << EOF
 subject:$TITLESTR
 EOF
