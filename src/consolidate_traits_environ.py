@@ -29,13 +29,14 @@ plt.show()
 
 def plot_sigma_VPD(VPD_arr = np.linspace(0.5,4.0,20)):
     sigma_arr = np.zeros((len(VPD_arr),2))
+    plt.figure(figsize=(5,4.5))
     for i, vpd in enumerate(VPD_arr):
         sigma_arr[i,0] = juni_plant.get_sigma(vpd, s)
         sigma_arr[i,1] = pine_plant.get_sigma(vpd, s)
-    plt.figure(figsize=(6,4.5))
+    plt.figure(figsize=(5,4.5))
     plt.plot(VPD_arr, sigma_arr[:,0], label='Juniper')
     plt.plot(VPD_arr, sigma_arr[:,1], label='Pine')
-    plt.legend(); plt.tight_layout()
+    plt.legend()
     
 def plot_ETmax_VPD(VPD_arr = np.linspace(0.5,4.0,20)):
     Emax_arr = np.zeros((len(VPD_arr),2))
@@ -190,11 +191,25 @@ n_trajectories = 500; dt = 0.1
 lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
 
-# plot_sigma_VPD()
+# plot_sigma_VPD(np.linspace(0.5,4.0,10))
 # plt.show()
 
-# plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-10,-0.1,10), VPD_arr=np.linspace(0.5,4.0,50))
-# plt.show()
+P_soil_arr=np.linspace(-10,-0.01,1000)
+E_grid = np.zeros((len(P_soil_arr),2))
+for i, psoil in enumerate(P_soil_arr):
+    E_grid[i,0], _ ,_ = pine_plant.flux_solver(psoil, VPD=0.8)
+    E_grid[i,1], _ ,_ = juni_plant.flux_solver(psoil, VPD=3.0)
+plt.figure(figsize=(5,4.5))
+plt.plot(-P_soil_arr, E_grid[:,0])
+plt.plot(-P_soil_arr, E_grid[:,1])
+plt.xlabel('P_soil (-MPa)')
+plt.ylabel('Transpiration')
+plt.xscale('log')
+plt.show()
+
+  
+plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-10,-0.1,10), VPD_arr=np.linspace(0.5,4.0,50))
+plt.show()
 
 # gridsize=10; int_range=np.linspace(0,3.0,gridsize); dur_range=np.linspace(0,180,gridsize)
 # plot_intensity_duration(pine_plant, int_range, dur_range)
