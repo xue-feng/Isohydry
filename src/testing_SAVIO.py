@@ -78,5 +78,11 @@ def main():
     
 if __name__ == '__main__':
     main()
+#     ''' sample storage '''
+#     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
+#         Y = pickle.load(handle)
+#     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'rb') as handle:
+#         params = pickle.load(handle)
+#     print 'pause'
     
     
