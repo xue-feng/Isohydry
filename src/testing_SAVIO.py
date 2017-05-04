@@ -8,7 +8,7 @@ def test():
     m = np.mean(np.arange(10))
     soil_type = 'loamy_sand'
     Ps = soil_dict[soil_type]['Ps']
-    sys.stdout.write('testing SAVIO!! The mean of array is %0.2f, Psat_soil is %0.2f' % (m, Ps))
+    sys.stdout.write('testing SAVIO!! The mean of array is %0.2f, Psat_soil is %.3e' % (m, Ps))
     
 if __name__ == '__main__':
     test()
