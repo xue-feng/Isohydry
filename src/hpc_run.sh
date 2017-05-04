@@ -18,4 +18,5 @@ DATE='date +%Y-%m-%d:%H:%M:%S'
 TITLESTR='SOBOL_$DATE'
 sendmail xue.feng@berkeley.edu << EOF
 subject:$TITLESTR
+$x
 EOF

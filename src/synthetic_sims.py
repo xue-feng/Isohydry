@@ -7,8 +7,6 @@ import multiprocessing as mp
 import cPickle as pickle
 import params_constants
 from scipy import stats
-import time
-import sys
 
 # set soil conditions 
 soil_type = 'loamy_sand'
@@ -84,7 +82,7 @@ def generate_samples(sp, n_runs, VPD=2.0, tmax=180):
 
 def plot_ind(ind, out, title=None): 
 #     plt.scatter(ind, out, s=20, c='gray', alpha=0.5, lw=0); plt.title(title)
-    ax.plot(ind, out, 'o', color='gray', alpha=0.3, mec='None'); ax.set_title(title)
+    plt.plot(ind, out, 'o', color='gray', alpha=0.3, mec='None'); ax = plt.subplot(111); ax.set_title(title)
     spcorr, corr_pval = stats.spearmanr(ind,out)
     print corr_pval
     if corr_pval<0.05:
@@ -96,10 +94,6 @@ def plot_ind(ind, out, title=None):
 #         plt.plot(ind, predict_y)
 
 def main():
-    pass
-    
-if __name__ == '__main__':
-#     main()
     sp = 'JUNI'
     
 #     ''' generate samples '''
@@ -151,3 +145,8 @@ if __name__ == '__main__':
     plt.show()
 #     plt.savefig('./Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_Assm.pdf')
 
+def test():
+    return 'testing SAVIO!'
+    
+if __name__ == '__main__':
+    test()
