@@ -3,7 +3,7 @@ import numpy as np
 from plant_soil_model import Canopy, Stem, Soil_root, Whole_plant, Soil
 
 def import_traits_data():
-    traits_path = '/Users/xuefeng/Dropbox/Projects/Isohydricity/hydraulic_traits.xls'
+    traits_path = '../hydraulic_traits.xls'
     filepath = traits_path
     book = xlrd.open_workbook(filepath)
     sheet = book.sheet_by_name('parameters')
