@@ -1,5 +1,7 @@
+import sys
+
 def test():
-    return 'testing SAVIO!'
+    sys.stdout.write('testing SAVIO!!')
     
 if __name__ == '__main__':
     test()
