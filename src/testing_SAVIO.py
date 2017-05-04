@@ -24,7 +24,7 @@ lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
-tmax=180; VPD = 2.0; sp='JUNI'; n_runs=10
+tmax=180; VPD = 2.0; sp='JUNI'; n_runs=1000
 
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
