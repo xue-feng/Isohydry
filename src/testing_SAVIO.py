@@ -12,6 +12,9 @@ def test():
     soil_type = 'loamy_sand'
     Ps = soil_dict[soil_type]['Ps']
     sys.stdout.write('testing SAVIO!! The mean of array is %0.2f, Psat_soil is %.3e' % (m, Ps))
+    with open('savio_testing.pickle', 'wb') as handle:
+        pickle.dump(m, handle)
+    pickle.dump()
     
 if __name__ == '__main__':
     test()
