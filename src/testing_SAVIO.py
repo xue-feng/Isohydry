@@ -1,4 +1,5 @@
 from SALib.sample import saltelli
+from SALib.analyze import sobol
 import numpy as np
 from params_soil import soil_dict
 import multiprocessing as mp
@@ -24,8 +25,13 @@ lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
-tmax=180; VPD = 2.0; sp='JUNI'; n_runs=1000
-
+tmax=180; VPD = 2.0; sp='PINE'; n_runs=1000
+# defining problem
+var_vals = [traits[sp][get_part(v)][v] for v in var_names[:-1]]; var_vals.extend([Rmax])
+problem_bounds = [[min(0.5*v,2.0*v), max(0.5*v,2.0*v)] for v in var_vals]
+# problem_bounds = [[min(0.25*v,4.0*v), max(0.25*v,4.0*v)] for v in var_vals]
+problem = {'num_vars': n_vars,'names': var_names,'bounds': problem_bounds}
+    
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
 
@@ -47,10 +53,6 @@ def evaluate_model(args):
     return Y
 
 def generate_samples(sp, n_runs, VPD=2.0, tmax=180):
-    var_vals = [traits[sp][get_part(v)][v] for v in var_names[:-1]]; var_vals.extend([Rmax])
-    problem_bounds = [[min(0.5*v,2.0*v), max(0.5*v,2.0*v)] for v in var_vals]
-#     problem_bounds = [[min(0.25*v,4.0*v), max(0.25*v,4.0*v)] for v in var_vals]
-    problem = {'num_vars': n_vars,'names': var_names,'bounds': problem_bounds}
     # generate samples
     param_values = saltelli.sample(problem, n_runs, calc_second_order=False); print len(param_values)
     
@@ -75,14 +77,34 @@ def main():
         pickle.dump(Y, handle)
     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'wb') as handle:
         pickle.dump(params, handle)
+
+def verify():
+    ''' sample storage '''
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
+        Y = pickle.load(handle)
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'rb') as handle:
+        params = pickle.load(handle)
+    # perform analysis
+    Si_A = sobol.analyze(problem, Y[:,1], calc_second_order=False, print_to_console=True)
+    try: Si_H = sobol.analyze(problem, Y[:,0], calc_second_order=False, print_to_console=True)
+    except: pass
+
+    Si_depo = np.zeros((n_vars, 4))
+    Si_depo[:,0] = Si_H['ST']
+    Si_depo[:,1] = Si_H['ST_conf']
+    Si_depo[:,2] = Si_A['ST']
+    Si_depo[:,3] = Si_A['ST_conf']
+            
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(6,4.5))
+    plt.subplot(211)
+    plt.bar(np.arange(len(Si_depo)),Si_depo[:,0], yerr=Si_depo[:,1]); plt.ylim(0,1)
+    plt.subplot(212)
+    plt.bar(np.arange(len(Si_depo)),Si_depo[:,2], yerr=Si_depo[:,3]); plt.ylim(0,1)
+    plt.tight_layout()
+    plt.show()
     
 if __name__ == '__main__':
     main()
-#     ''' sample storage '''
-#     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
-#         Y = pickle.load(handle)
-#     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'rb') as handle:
-#         params = pickle.load(handle)
-#     print 'pause'
     
     
