@@ -3,6 +3,9 @@ from SALib.sample import saltelli
 from scipy import stats
 import numpy as np
 from params_soil import soil_dict
+import matplotlib.pyplot as plt
+import multiprocessing as mp
+import cPickle as pickle
 
 def test():
     m = np.mean(np.arange(10))
