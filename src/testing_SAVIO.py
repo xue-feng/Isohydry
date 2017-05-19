@@ -7,6 +7,9 @@ import cPickle as pickle
 import time
 from utility_functions import import_traits_data, simulate_ps_t, get_part, initialize_generic_plant
 import sys
+import matplotlib.pyplot as plt
+import params_constants
+from scipy import stats
 
 ''' set soil conditions ''' 
 soil_type = 'loamy_sand'
@@ -25,7 +28,7 @@ lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
-tmax=30; VPD = 2.0; n_runs=1000
+VPD = 2.0; n_runs=1000
     
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
@@ -68,7 +71,7 @@ def define_problem(sp='JUNI'):
     problem = {'num_vars': n_vars,'names': var_names,'bounds': problem_bounds}
     return problem
 
-def sample_main(sp='JUNI'):
+def sample_main(sp='JUNI', tmax=180):
     ''' generate samples '''
     t0=time.time()
     Y, params = generate_samples(sp,n_runs=n_runs, VPD=VPD,tmax=tmax)
@@ -80,34 +83,11 @@ def sample_main(sp='JUNI'):
     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'wb') as handle:
         pickle.dump(params, handle)
 
-def verify(sp='JUNI'):
-    ''' sample storage '''
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
-        Y = pickle.load(handle)
-    # perform analysis
-    problem = define_problem(sp)
-    Si_A = sobol.analyze(problem, Y[:,1], calc_second_order=False, print_to_console=True)
-    try: Si_H = sobol.analyze(problem, Y[:,0], calc_second_order=False, print_to_console=True)
-    except: pass
 
-    Si_depo = np.zeros((n_vars, 4))
-    Si_depo[:,0] = Si_H['ST']
-    Si_depo[:,1] = Si_H['ST_conf']
-    Si_depo[:,2] = Si_A['ST']
-    Si_depo[:,3] = Si_A['ST_conf']
-            
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(6,4.5))
-    plt.subplot(211)
-    plt.bar(np.arange(len(Si_depo)),Si_depo[:,0], yerr=Si_depo[:,1]); plt.ylim(0,1)
-    plt.subplot(212)
-    plt.bar(np.arange(len(Si_depo)),Si_depo[:,2], yerr=Si_depo[:,3]); plt.ylim(0,1)
-    plt.tight_layout()
-    plt.show()
-    
+
+
 if __name__ == '__main__':
-    sample_main('JUNI')
-    sample_main('PINE')
-#     verify()
-    
+#     sample_main('JUNI')
+#     sample_main('PINE')
+
     

@@ -53,7 +53,6 @@ def plot_flux_VPD_lines(plant, P_soil_arr, VPD_arr, g_size=10):
     for i, vpd in enumerate(VPD_arr):
         for j, psoil in enumerate(P_soil_arr):
             E_grid[i,j], _ ,_= plant.flux_solver(psoil, vpd)
-    plt.figure(figsize=(6,4.5))
     for k, psoil in enumerate(P_soil_arr):
         plt.plot(VPD_arr, E_grid[:,k])
     plt.xlabel('VPD (kPa)')
@@ -205,10 +204,10 @@ plt.plot(-P_soil_arr, E_grid[:,1])
 plt.xlabel('P_soil (-MPa)')
 plt.ylabel('Transpiration')
 plt.xscale('log')
-plt.show()
 
-  
-plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-10,-0.1,10), VPD_arr=np.linspace(0.5,4.0,50))
+plt.figure(figsize=(5,4.5))
+plot_flux_VPD_lines(juni_plant, P_soil_arr=np.linspace(-2,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
+plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-2,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
 plt.show()
 
 # gridsize=10; int_range=np.linspace(0,3.0,gridsize); dur_range=np.linspace(0,180,gridsize)
