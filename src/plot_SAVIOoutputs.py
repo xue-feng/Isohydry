@@ -37,10 +37,11 @@ def get_nondimen_indices(sp, VPD, tmax):
     beta = params[:, var_dict['P50_stem']]/ (-2.30259/params[:, var_dict['c_leaf']])# convert from c_leaf to P10_leaf
     delta = params[:, var_dict['P50_stem']]/Ps
     kappa = gx_max/gs_max; 
-    f = (gx_max*params[:, var_dict['P50_stem']])/(gc_max*VPD)
+    chi = (gx_max*params[:, var_dict['P50_stem']])/(gc_max*VPD)
+    rho = params[:, var_dict['P50_stem']]
     HR = Y[:,0]
     Assm = Y[:,1]
-    return beta, delta, kappa, f, HR, Assm
+    return beta, delta, kappa, chi, rho, HR, Assm
 
 def bin_nondimen_groups(data, output1, output2, nbins=12):
     bins = np.linspace(np.min(data), np.max(data), nbins)
@@ -60,36 +61,43 @@ def bin_nondimen_groups(data, output1, output2, nbins=12):
     return binned
 
 def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
-    beta, delta, kappa, f, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
+    beta, delta, kappa, chi, rho, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
     beta_bin = bin_nondimen_groups(beta, HR, Assm)
     delta_bin = bin_nondimen_groups(delta, HR, Assm)
     kappa_bin = bin_nondimen_groups(kappa, HR, Assm)
-    f_bin = bin_nondimen_groups(f, HR, Assm)
+    chi_bin = bin_nondimen_groups(chi, HR, Assm)
+    rho_bin = bin_nondimen_groups(rho, HR, Assm)
     
     ''' plotting sample results '''
     if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.03, 0.12)
     elif option=='HR': out = HR; group_ind =(2,3); suptitle = 'Hydraulic risk: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims=(-0.1,1.0)
     
-    fig = plt.figure(figsize=(10,3));# plt.suptitle(suptitle)
+    fig = plt.figure(figsize=(12,3));# plt.suptitle(suptitle)
     get_inputs = lambda databin: (databin[:,0], databin[:,group_ind[0]], databin[:,1], databin[:,group_ind[1]])
-    ax = fig.add_subplot(141)
+    ax = fig.add_subplot(151)
     plot_ind(ax,beta,out,ylims,'P50/Pg12'); plot_summary_ind(ax,*get_inputs(beta_bin))
     
-    ax = fig.add_subplot(142)
+    ax = fig.add_subplot(152)
     plot_ind(ax,delta,out,ylims,'P50/Psat_soil'); plot_summary_ind(ax,*get_inputs(delta_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
 #     ax.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2e'))
     
-    ax = fig.add_subplot(143)
+    ax = fig.add_subplot(153)
     plot_ind(ax,kappa,out,ylims,'gmax_stem/gmax_root'); plot_summary_ind(ax,*get_inputs(kappa_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
-    ax = fig.add_subplot(144)
-    plot_ind(ax,f,out,ylims,'(gmax_stem*P50)/(gmax_canopy*VPD)'); plot_summary_ind(ax,*get_inputs(f_bin))
+    ax = fig.add_subplot(154)
+    plot_ind(ax,chi,out,ylims,'(gmax_stem*P50)/(gmax_canopy*VPD)'); plot_summary_ind(ax,*get_inputs(chi_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
+    
+    ax = fig.add_subplot(155)
+    plot_ind(ax,rho,out,ylims,'Rmax/Amax'); plot_summary_ind(ax,*get_inputs(rho_bin))
+    ax.yaxis.set_ticklabels([])
+    _, labels = plt.xticks(); plt.setp(labels, rotation=45)
+    
 #     plt.tight_layout()
     
 def define_problem(sp='JUNI'):
@@ -197,9 +205,9 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-# barplot_twospecies(tmax=30)
-# barplot_twospecies(tmax=180)
-# plt.show()
+barplot_twospecies(tmax=30)
+barplot_twospecies(tmax=180)
+plt.show()
 # 
 # barplot_earlylate('PINE')
 # barplot_earlylate('JUNI')
