@@ -19,9 +19,9 @@ def plot_summary_ind(ax, x,y,xerr,yerr ):
     ax.errorbar(x, y, yerr=yerr, fmt='o', mec='None')
        
 def get_nondimen_indices(sp, VPD, tmax):
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_params.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_params.pickle', 'rb') as handle:
         params = pickle.load(handle)
     var_dict = {'A_canopy':0,'Gs_leaf':1,'c_leaf':2,'L_stem':3,'A_stem':4,'Ksat_stem':5,'a_stem':6,'P50_stem':7,'L_root':8,'A_root':9,'Rmax':10}
     
@@ -100,7 +100,7 @@ def define_problem(sp='JUNI'):
 
 def sobol_analysis(sp, VPD, tmax):
     # retrieve sample
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
     # perform analysis
     problem = define_problem(sp)
