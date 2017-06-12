@@ -211,6 +211,6 @@ class Whole_plant:
         except IndexError: 
             imin = 0
         sigma = 1.0 - (diffP[imax] - diffP[imin])/(P_soil[imax]-P_soil[imin])
-#         plt.plot(P_soil, P_stem); plt.plot(P_soil, P_soil, '--'); plt.plot([P_soil[imin],P_soil[imax]],[P_stem[imin],P_stem[imax]], 'o')
+        plt.plot(P_soil, P_stem); plt.plot(P_soil, P_soil, '--'); plt.plot([P_soil[imin],P_soil[imax]],[P_stem[imin],P_stem[imax]], 'o')
 #         plt.plot(P_soil, diffP); plt.plot([P_soil[imin], P_soil[imax]], [diffP[imin], diffP[imax]], 'o'); plt.show()
         return sigma

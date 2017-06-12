@@ -26,7 +26,7 @@ sigma_pine = pine_plant.get_sigma(2.0,s)
 print sigma_juni, juni_plant.get_Pg12() - juni_plant.stem.P50_stem
 print sigma_pine, pine_plant.get_Pg12() - pine_plant.stem.P50_stem
 print traits['JUNI']['canopy_dict']
-
+print traits['JUNI']['stem_dict']
 
 def plot_sigma_VPD(VPD_arr = np.linspace(0.5,4.0,20)):
     sigma_arr = np.zeros((len(VPD_arr),2))
@@ -187,12 +187,14 @@ def plot_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
     
 # visualize pine and juniper performance under intensity and duration 
 # performance gauged by hydraulic risk and reduction in Assimilation
+
 n_trajectories = 500; dt = 0.1
-lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
+# lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
+lam=0.05; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
 
-# plot_sigma_VPD(np.linspace(0.5,4.0,10))
-# plt.show()
+plot_sigma_VPD(np.linspace(0.5,4.0,10))
+plt.show()
 
 P_soil_arr=np.linspace(-10,-0.01,1000)
 E_grid = np.zeros((len(P_soil_arr),2))
