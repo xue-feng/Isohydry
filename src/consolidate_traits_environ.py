@@ -25,7 +25,8 @@ sigma_juni = juni_plant.get_sigma(2.0,s)
 sigma_pine = pine_plant.get_sigma(2.0,s)
 print sigma_juni, juni_plant.get_Pg12() - juni_plant.stem.P50_stem
 print sigma_pine, pine_plant.get_Pg12() - pine_plant.stem.P50_stem
-plt.show()
+print traits['JUNI']['canopy_dict']
+
 
 def plot_sigma_VPD(VPD_arr = np.linspace(0.5,4.0,20)):
     sigma_arr = np.zeros((len(VPD_arr),2))

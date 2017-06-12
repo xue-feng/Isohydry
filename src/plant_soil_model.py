@@ -170,8 +170,14 @@ class Whole_plant:
         for i, si in enumerate(s): 
             Flux[i,:] = self.flux_solver_s(si, VPD, Flux_init)
             P_soil[i] = self.soil.P_soil_solver(si)  
-#             Flux_init = Flux[i,:] 
+#         return Flux, P_soil
         return Flux[::-1, :], P_soil[::-1]
+    
+    def get_fluxes_scalar(self, VPD, s):
+        P_soil = self.soil.P_soil_solver(s) 
+        Flux_init = (0.000001,P_soil,P_soil-0.1)
+        Flux = self.flux_solver_s(s, VPD, Flux_init)
+        return Flux, P_soil
     
     def get_Es_params(self, VPD, s):
         Flux, _ = self.get_fluxes(VPD, s) 

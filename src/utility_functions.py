@@ -79,7 +79,7 @@ def simulate_s_t(depths, tRun, dt, sInit, lam, gam, eta, k, sw, sst, s1, Amax, R
 def simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R):
     ''' simulate for multiple trajectories over time '''
     # generating rainfall depth all at once
-    size = len(tRun)*n_trajectories
+    size = len(tRun)*n_trajectories 
     depthExp = -np.log(1.0-np.random.random(size=size))/gam
     freqUnif = np.random.random(size=size)
     

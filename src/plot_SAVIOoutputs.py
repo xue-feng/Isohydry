@@ -38,10 +38,13 @@ def get_nondimen_indices(sp, VPD, tmax):
     delta = params[:, var_dict['P50_stem']]/Ps
     kappa = gx_max/gs_max; 
     chi = (gx_max*params[:, var_dict['P50_stem']])/(gc_max*VPD)
-    rho = params[:, var_dict['P50_stem']]
+    rho = params[:, var_dict['Rmax']]
+    epsilon = gs_max*VPD/(alpha*lam)
+    tau = tmax*n*var_dict['L_root']/(gc_max*VPD)
+    
     HR = Y[:,0]
     Assm = Y[:,1]
-    return beta, delta, kappa, chi, rho, HR, Assm
+    return beta, delta, kappa, chi, rho, epsilon, tau, HR, Assm
 
 def bin_nondimen_groups(data, output1, output2, nbins=12):
     bins = np.linspace(np.min(data), np.max(data), nbins)
@@ -61,40 +64,52 @@ def bin_nondimen_groups(data, output1, output2, nbins=12):
     return binned
 
 def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
-    beta, delta, kappa, chi, rho, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
+    beta, delta, kappa, chi, rho, epsilon, tau, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
     beta_bin = bin_nondimen_groups(beta, HR, Assm)
     delta_bin = bin_nondimen_groups(delta, HR, Assm)
     kappa_bin = bin_nondimen_groups(kappa, HR, Assm)
     chi_bin = bin_nondimen_groups(chi, HR, Assm)
     rho_bin = bin_nondimen_groups(rho, HR, Assm)
+    epsilon_bin = bin_nondimen_groups(epsilon, HR, Assm)
+    tau_bin = bin_nondimen_groups(tau, HR, Assm)
     
     ''' plotting sample results '''
     if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.03, 0.12)
     elif option=='HR': out = HR; group_ind =(2,3); suptitle = 'Hydraulic risk: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims=(-0.1,1.0)
     
-    fig = plt.figure(figsize=(12,3));# plt.suptitle(suptitle)
+    fig = plt.figure(figsize=(15,3));# plt.suptitle(suptitle)
     get_inputs = lambda databin: (databin[:,0], databin[:,group_ind[0]], databin[:,1], databin[:,group_ind[1]])
-    ax = fig.add_subplot(151)
+    ax = fig.add_subplot(171)
     plot_ind(ax,beta,out,ylims,'P50/Pg12'); plot_summary_ind(ax,*get_inputs(beta_bin))
     
-    ax = fig.add_subplot(152)
+    ax = fig.add_subplot(172)
     plot_ind(ax,delta,out,ylims,'P50/Psat_soil'); plot_summary_ind(ax,*get_inputs(delta_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
 #     ax.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2e'))
     
-    ax = fig.add_subplot(153)
+    ax = fig.add_subplot(173)
     plot_ind(ax,kappa,out,ylims,'gmax_stem/gmax_root'); plot_summary_ind(ax,*get_inputs(kappa_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
-    ax = fig.add_subplot(154)
+    ax = fig.add_subplot(174)
     plot_ind(ax,chi,out,ylims,'(gmax_stem*P50)/(gmax_canopy*VPD)'); plot_summary_ind(ax,*get_inputs(chi_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
-    ax = fig.add_subplot(155)
+    ax = fig.add_subplot(175)
     plot_ind(ax,rho,out,ylims,'Rmax/Amax'); plot_summary_ind(ax,*get_inputs(rho_bin))
+    ax.yaxis.set_ticklabels([])
+    _, labels = plt.xticks(); plt.setp(labels, rotation=45)
+    
+    ax = fig.add_subplot(176)
+    plot_ind(ax,epsilon,out,ylims,'(gmax_canopy*VPD)/(alpha*lam)'); plot_summary_ind(ax,*get_inputs(epsilon_bin))
+    ax.yaxis.set_ticklabels([])
+    _, labels = plt.xticks(); plt.setp(labels, rotation=45)
+    
+    ax = fig.add_subplot(177)
+    plot_ind(ax,tau,out,ylims,'tmax*n*Zr/(gmax_canopy*VPD)'); plot_summary_ind(ax,*get_inputs(tau_bin))
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
@@ -171,7 +186,7 @@ def barplot_twospecies(VPD=2.0, tmax=30):
     ''' for hydraulic risk'''
     ax = plt.subplot(211)
     ax.bar(ind, Si_juni[iplot,0], width, color='brown', edgecolor='white', yerr=Si_juni[iplot,1], error_kw=error_kw)
-    ax.bar(ind+width, Si_pine[iplot,0], width, color='green', edgecolor='white', yerr=Si_pine[iplot,1], error_kw=error_kw)
+    ax.bar(ind+width, Si_pine[iplot,0], width, color='blue', alpha=0.5, edgecolor='white', yerr=Si_pine[iplot,1], error_kw=error_kw)
     ax.set_xticks(ind + width)
     ax.set_xticklabels([])
     plt.ylim(0,1.2); plt.xlim(-width, np.max(ind)+width*3.0)
@@ -179,7 +194,7 @@ def barplot_twospecies(VPD=2.0, tmax=30):
     ''' for carbon '''
     ax = plt.subplot(212) 
     ax.bar(ind, Si_juni[iplot,2], width, color='brown', edgecolor='white', yerr=Si_juni[iplot,3], error_kw=error_kw)
-    ax.bar(ind+width, Si_pine[iplot,2], width, color='green', edgecolor='white', yerr=Si_pine[iplot,3], error_kw=error_kw)
+    ax.bar(ind+width, Si_pine[iplot,2], width, color='blue', alpha=0.5, edgecolor='white', yerr=Si_pine[iplot,3], error_kw=error_kw)
     ax.set_xticks(ind + width)
     ax.set_xticklabels(var_names[iplot], rotation=45)
     print var_names[iplot]
@@ -197,7 +212,7 @@ Ps = soil_dict[soil_type]['Ps']
 traits = import_traits_data()
 
 n_trajectories = 500; dt = 0.1
-lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
+lam=0.05; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
 
 ## prep for sensitivity analysis ##
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
@@ -205,16 +220,16 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-barplot_twospecies(tmax=30)
-barplot_twospecies(tmax=180)
-plt.show()
-# 
+# barplot_twospecies(tmax=30)
+# barplot_twospecies(tmax=180)
+# plt.show()
+ 
 # barplot_earlylate('PINE')
 # barplot_earlylate('JUNI')
 # plt.show()
 
-plot_nondimen_samples('JUNI', VPD=VPD, tmax=180, option='HR')
-plot_nondimen_samples('JUNI', VPD=VPD, tmax=180, option='CA')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=180, option='HR')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=180, option='CA')
+plot_nondimen_samples('JUNI', VPD=VPD, tmax=30, option='HR')
+plot_nondimen_samples('JUNI', VPD=VPD, tmax=30, option='CA')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=30, option='HR')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=30, option='CA')
 plt.show()
