@@ -81,9 +81,9 @@ def sample_main(sp='JUNI', tmax=180):
     t1=time.time(); sys.stdout.write('%0.2f minutes \n' %((t1-t0)/60.0) ) 
     
     ''' sample storage '''
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_outcomes.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'wb') as handle:
         pickle.dump(Y, handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_params.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_params.pickle', 'wb') as handle:
         pickle.dump(params, handle)
 
 if __name__ == '__main__':
