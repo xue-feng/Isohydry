@@ -60,8 +60,8 @@ def generate_samples(sp, n_runs, VPD=2.0, tmax=180):
     # generate samples
     param_values = saltelli.sample(problem, n_runs, calc_second_order=False); print len(param_values)
     
-    ''' for debuggin '''
-    evaluate_model((param_values, VPD, tmax))
+#     ''' for debuggin '''
+#     evaluate_model((param_values, VPD, tmax))
     
     ''' parallel processing '''
     ncores = mp.cpu_count(); print('There are %s cores on this machine '%(str(ncores),))
@@ -94,7 +94,7 @@ def sample_main(sp='JUNI', tmax=180):
 if __name__ == '__main__':
     sample_main('JUNI', tmax=60)
     sample_main('PINE', tmax=60)
-#     sample_main('JUNI', tmax=150)
-#     sample_main('PINE', tmax=150)
+    sample_main('JUNI', tmax=150)
+    sample_main('PINE', tmax=150)
 
     
