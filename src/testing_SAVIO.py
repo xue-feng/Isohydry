@@ -94,11 +94,12 @@ def sample_main(sp='JUNI', tmax=180):
 if __name__ == '__main__':
     sample_main('JUNI', tmax=30)
     sample_main('PINE', tmax=30)
-    sample_main('JUNI', tmax=180)
-    sample_main('PINE', tmax=180)
-    sample_main('JUNI', tmax=60)
-    sample_main('PINE', tmax=60)
-    sample_main('JUNI', tmax=150)
-    sample_main('PINE', tmax=150)
+    
+#     sample_main('JUNI', tmax=180)
+#     sample_main('PINE', tmax=180)
+#     sample_main('JUNI', tmax=60)
+#     sample_main('PINE', tmax=60)
+#     sample_main('JUNI', tmax=150)
+#     sample_main('PINE', tmax=150)
 
     
