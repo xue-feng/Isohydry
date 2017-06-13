@@ -38,7 +38,6 @@ class Stem:
         self.Ksat_stem = Ksat_stem      
         self.a_stem = a_stem
         self.P50_stem = P50_stem
-        self.a_stem = a_stem
         self.plc_form = plc_form
         
     def gmax_stem(self):
