@@ -21,12 +21,15 @@ s = np.hstack((np.linspace(smin,sst,500), np.linspace(sst+0.001,1.0,100)))
 traits = import_traits_data()
 juni_plant = initialize_plant('JUNI', traits, soil_type)
 pine_plant = initialize_plant('PINE', traits, soil_type)
+print 'JUNI Emax', juni_plant.get_Es_params(2.0,s)[-1]
+print 'PINE Emax', pine_plant.get_Es_params(2.0,s)[-1]
 sigma_juni = juni_plant.get_sigma(2.0,s)
 sigma_pine = pine_plant.get_sigma(2.0,s)
 print sigma_juni, juni_plant.get_Pg12() - juni_plant.stem.P50_stem
 print sigma_pine, pine_plant.get_Pg12() - pine_plant.stem.P50_stem
 print traits['JUNI']['canopy_dict']
 print traits['JUNI']['stem_dict']
+print traits['JUNI']['root_dict']
 
 def plot_sigma_VPD(VPD_arr = np.linspace(0.5,4.0,20)):
     sigma_arr = np.zeros((len(VPD_arr),2))
@@ -90,13 +93,19 @@ def plot_trajectories(plant, tmax, VPD, newfig=True):
     if newfig: 
         plt.figure(figsize=(6,8))
     tRun =  np.arange(0,tmax+dt,dt)
-    gam, eta, k, sw, sst, sCrit = plant.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc=0.80)
+    gam, eta, k, sw, sst, sCrit = plant.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc=0.50)
     ps, _ = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
     ps_mean = np.mean(ps, axis=0)
+# for i in range(len(ps)):
+#     plt.plot(ps[i])
+# plt.show()
     fluxes, _ = plant.get_fluxes(VPD, ps_mean)
-    plt.subplot(3,1,1); plt.plot(tRun, ps_mean, lw=1.0, color='gray'); plt.hlines(sCrit,0,tmax, lw=1.0, color='red')
-    plt.subplot(3,1,2); plt.plot(tRun, plant.canopy.g_canopy(fluxes[:,2], VPD), lw=1.0, color='green')
-    plt.subplot(3,1,3); plt.plot(tRun, plant.stem.g_stem(fluxes[:,1]), lw=1.0, color='blue')
+    plt.subplot(3,1,1); plt.title('Mean soil moisture')
+    plt.plot(tRun, ps_mean, lw=1.0, color='gray'); plt.hlines(sCrit,0,tmax, lw=1.0, color='red')
+    plt.subplot(3,1,2); plt.title('canopy conductance')
+    plt.plot(tRun, plant.canopy.g_canopy(fluxes[:,2], VPD), lw=1.0, color='green')
+    plt.subplot(3,1,3); plt.title('xylem conductance')
+    plt.plot(tRun, plant.stem.g_stem(fluxes[:,1]), lw=1.0, color='blue')
 
 def plot_intensity_duration(plant, int_range, dur_range):
     TMAX, INT = np.meshgrid(dur_range, int_range)
@@ -190,8 +199,13 @@ def plot_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
 
 n_trajectories = 500; dt = 0.1
 # lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
-lam=0.05; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
+lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
+
+plot_trajectories(juni_plant, 180, 2.0, newfig=True)
+plot_trajectories(pine_plant, 180, 2.0, newfig=True)
+plt.show()
+
 
 plot_sigma_VPD(np.linspace(0.5,4.0,10))
 plt.show()

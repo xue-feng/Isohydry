@@ -54,10 +54,17 @@ def initialize_generic_plant(trait_names, params, soil_type):
     return plant
                   
 def rho(s, lam, gam, eta, k, sw, sst, s1, Amax, R):
-    if s<=sw: rho_s = 0.0; assm_s = 0.0-R
-    elif (s>sw)&(s<=sst): rho_s = eta*(s-sw)/(sst-sw); assm_s = Amax*(s-sw)/(sst-sw) - R
-    elif (s>sst)&(s<=s1): rho_s = eta; assm_s = Amax-R
-    elif (s>s1)&(s<=1.0): rho_s = eta + k*(s-s1)/(1.0-s1); assm_s = Amax-R
+    # bare ground evaporation 
+    eta0 = 0.0001
+    if s<=sw: rho_s = eta0*s/sw; assm_s = 0.0-R
+    elif (s>sw)&(s<=sst): rho_s = eta*(s-sw)/(sst-sw) + eta0; assm_s = Amax*(s-sw)/(sst-sw) - R
+    elif (s>sst)&(s<=s1): rho_s = eta + eta0; assm_s = Amax-R
+    elif (s>s1)&(s<=1.0): rho_s = eta + eta0 + k*(s-s1)/(1.0-s1); assm_s = Amax-R
+    
+#     if s<=sw: rho_s = 0.0; assm_s = 0.0-R
+#     elif (s>sw)&(s<=sst): rho_s = eta*(s-sw)/(sst-sw); assm_s = Amax*(s-sw)/(sst-sw) - R
+#     elif (s>sst)&(s<=s1): rho_s = eta; assm_s = Amax-R
+#     elif (s>s1)&(s<=1.0): rho_s = eta + k*(s-s1)/(1.0-s1); assm_s = Amax-R
     return rho_s, assm_s
 
 def simulate_s_t(depths, tRun, dt, sInit, lam, gam, eta, k, sw, sst, s1, Amax, R):

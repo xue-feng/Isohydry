@@ -33,7 +33,7 @@ lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
-VPD = 2.0; n_runs=5000
+VPD = 2.0; n_runs=1000
     
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
@@ -92,8 +92,8 @@ def sample_main(sp='JUNI', tmax=180):
         pickle.dump(params, handle)
 
 if __name__ == '__main__':
-#     sample_main('JUNI', tmax=30)
-#     sample_main('PINE', tmax=30)
+    sample_main('JUNI', tmax=30)
+    sample_main('PINE', tmax=30)
     sample_main('JUNI', tmax=180)
     sample_main('PINE', tmax=180)
 #     sample_main('JUNI', tmax=60)
