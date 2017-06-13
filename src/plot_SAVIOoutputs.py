@@ -220,15 +220,15 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-barplot_twospecies(tmax=30)
-barplot_twospecies(tmax=180)
+barplot_twospecies(tmax=60)
+barplot_twospecies(tmax=150)
 plt.show()
  
 # barplot_earlylate('PINE')
 # barplot_earlylate('JUNI')
 # plt.show()
 
-tmax = 180
+tmax = 150
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
 plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
