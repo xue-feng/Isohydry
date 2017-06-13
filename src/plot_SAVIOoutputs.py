@@ -221,7 +221,7 @@ n_vars = len(var_names)
 VPD=2.0
 
 barplot_twospecies(tmax=30)
-# barplot_twospecies(tmax=180)
+barplot_twospecies(tmax=180)
 plt.show()
  
 # barplot_earlylate('PINE')
