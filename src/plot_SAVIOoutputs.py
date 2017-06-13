@@ -19,9 +19,9 @@ def plot_summary_ind(ax, x,y,xerr,yerr ):
     ax.errorbar(x, y, yerr=yerr, fmt='o', mec='None')
        
 def get_nondimen_indices(sp, VPD, tmax):
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_params.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_params.pickle', 'rb') as handle:
         params = pickle.load(handle)
     var_dict = {'A_canopy':0,'Gs_leaf':1,'c_leaf':2,'L_stem':3,'A_stem':4,'Ksat_stem':5,'a_stem':6,'P50_stem':7,'L_root':8,'A_root':9,'Rmax':10}
     
@@ -123,7 +123,7 @@ def define_problem(sp='JUNI'):
 
 def sobol_analysis(sp, VPD, tmax):
     # retrieve sample
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severe_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
     # perform analysis
     problem = define_problem(sp)
@@ -212,7 +212,7 @@ Ps = soil_dict[soil_type]['Ps']
 traits = import_traits_data()
 
 n_trajectories = 500; dt = 0.1
-lam=0.05; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
+lam=0.05; alpha=0.010;  Amax = 1.0/dt; Rmax = 0.10*Amax;
 
 ## prep for sensitivity analysis ##
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
@@ -220,16 +220,17 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-# barplot_twospecies(tmax=30)
-# barplot_twospecies(tmax=180)
-# plt.show()
+barplot_twospecies(tmax=30)
+barplot_twospecies(tmax=180)
+plt.show()
  
 # barplot_earlylate('PINE')
 # barplot_earlylate('JUNI')
 # plt.show()
 
-plot_nondimen_samples('JUNI', VPD=VPD, tmax=30, option='HR')
-plot_nondimen_samples('JUNI', VPD=VPD, tmax=30, option='CA')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=30, option='HR')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=30, option='CA')
+tmax = 180
+plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
+plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()
