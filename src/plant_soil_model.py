@@ -191,8 +191,14 @@ class Whole_plant:
     def get_derived_params(self, VPD, s, alpha, n, Ks, sfc, plc=0.80): 
         Es_params = self.get_Es_params(VPD, s)
         Zr = self.soil_root.L_root
+        
+        ''' to renormalize to per plant basis, soil water storage need to be modified! - matters both for loss and for rain pulse input 
+        e.g., instead of Zr*unit ground area, it's Zr*Ar
+        '''
+        Ar = self.soil_root.A_root
         sw = Es_params[0]; sst = Es_params[1]; ETmax = Es_params[2]
-        gam = n*Zr/alpha; eta = ETmax/(n*Zr); k = Ks/(n*Zr)
+#         gam = n*Zr/alpha; eta = ETmax/(n*Zr); k = Ks/(n*Zr)
+        gam = n*Zr*Ar/alpha; eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
         sCrit = self.get_sCrit(plc)
         return gam, eta, k, sw, sst, sCrit
     

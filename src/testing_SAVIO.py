@@ -7,7 +7,6 @@ import cPickle as pickle
 import time
 from utility_functions import import_traits_data, simulate_ps_t, get_part, initialize_generic_plant
 import sys
-import matplotlib.pyplot as plt
 import params_constants
 from scipy import stats
 
@@ -27,8 +26,9 @@ n_trajectories = 500; dt = 0.1
 # lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
 # ''' severe conditions, for tmax=30,180 '''
 # lam=0.05; alpha=0.010; s1 = sfc; s0 = (sfc+sst)/2.0; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
-''' severe conditions, for tmax=30,60,150,180 m2m2 '''
-lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
+# ''' severe conditions, for tmax=30,60,150,180 m2m2 '''
+# lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
+lam=0.10; alpha=0.010; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
@@ -86,9 +86,9 @@ def sample_main(sp='JUNI', tmax=180):
     t1=time.time(); sys.stdout.write('%0.2f minutes \n' %((t1-t0)/60.0) ) 
     
     ''' sample storage '''
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_outcomes.pickle', 'wb') as handle:
         pickle.dump(Y, handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_params.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_params.pickle', 'wb') as handle:
         pickle.dump(params, handle)
 
 if __name__ == '__main__':

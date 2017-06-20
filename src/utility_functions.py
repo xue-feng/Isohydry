@@ -68,7 +68,8 @@ def rho(s, lam, gam, eta, k, sw, sst, s1, Amax, R):
     return rho_s, assm_s
 
 def simulate_s_t(depths, tRun, dt, sInit, lam, gam, eta, k, sw, sst, s1, Amax, R):
-    ''' simulate for a single trajectory'''
+    ''' simulate for a single trajectory
+     to renormalize to per plant basis,  gamma need to be modified!  - matters both for loss and for rain pulse input '''
     s_t = np.zeros(len(tRun))
     assm_t = np.zeros_like(s_t)
     s0 = sInit

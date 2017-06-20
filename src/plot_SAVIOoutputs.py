@@ -19,9 +19,9 @@ def plot_summary_ind(ax, x,y,xerr,yerr ):
     ax.errorbar(x, y, yerr=yerr, fmt='o', mec='None')
        
 def get_nondimen_indices(sp, VPD, tmax):
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_params.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_params.pickle', 'rb') as handle:
         params = pickle.load(handle)
     var_dict = {'A_canopy':0,'Gs_leaf':1,'c_leaf':2,'L_stem':3,'A_stem':4,'Ksat_stem':5,'a_stem':6,'P50_stem':7,'L_root':8,'A_root':9,'Rmax':10}
     
@@ -74,10 +74,10 @@ def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
     tau_bin = bin_nondimen_groups(tau, HR, Assm)
     
     ''' plotting sample results '''
-    if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.03, 0.12)
+    if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.01, 0.11)
     elif option=='HR': out = HR; group_ind =(2,3); suptitle = 'Hydraulic risk: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims=(-0.1,1.0)
     
-    fig = plt.figure(figsize=(15,3));# plt.suptitle(suptitle)
+    fig = plt.figure(figsize=(15,2.5));# plt.suptitle(suptitle)
     get_inputs = lambda databin: (databin[:,0], databin[:,group_ind[0]], databin[:,1], databin[:,group_ind[1]])
     ax = fig.add_subplot(171)
     plot_ind(ax,beta,out,ylims,'P50/Pg12'); plot_summary_ind(ax,*get_inputs(beta_bin))
@@ -113,7 +113,7 @@ def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
-#     plt.tight_layout()
+    plt.tight_layout()
     
 def define_problem(sp='JUNI'):
     var_vals = [traits[sp][get_part(v)][v] for v in var_names[:-1]]; var_vals.extend([Rmax])
@@ -123,7 +123,7 @@ def define_problem(sp='JUNI'):
 
 def sobol_analysis(sp, VPD, tmax):
     # retrieve sample
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_severeM2M2_outcomes.pickle', 'rb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
     # perform analysis
     problem = define_problem(sp)
@@ -210,6 +210,7 @@ n = soil_dict[soil_type]['n']
 Ks = soil_dict[soil_type]['Ksat']
 Ps = soil_dict[soil_type]['Ps']
 traits = import_traits_data()
+print sst
 
 n_trajectories = 500; dt = 0.1
 lam=0.05; alpha=0.007;  Amax = 1.0/dt; Rmax = 0.10*Amax;
@@ -220,7 +221,7 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-barplot_twospecies(tmax=30)
+barplot_twospecies(tmax=60)
 barplot_twospecies(tmax=180)
 plt.show()
  
@@ -228,9 +229,9 @@ plt.show()
 # barplot_earlylate('JUNI')
 # plt.show()
 
-tmax = 30
+tmax = 180
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
-plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
-plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()
