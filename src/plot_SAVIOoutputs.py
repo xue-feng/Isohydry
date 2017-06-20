@@ -213,15 +213,16 @@ traits = import_traits_data()
 print sst
 
 n_trajectories = 500; dt = 0.1
-lam=0.05; alpha=0.007;  Amax = 1.0/dt; Rmax = 0.10*Amax;
+# lam=0.05; alpha=0.007;  Amax = 1.0/dt; Rmax = 0.10*Amax;
 
+lam=0.10; alpha=0.010; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax
 ## prep for sensitivity analysis ##
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
 
 VPD=2.0
 
-barplot_twospecies(tmax=60)
+barplot_twospecies(tmax=30)
 barplot_twospecies(tmax=180)
 plt.show()
  
@@ -232,6 +233,6 @@ plt.show()
 tmax = 180
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()
