@@ -193,12 +193,14 @@ class Whole_plant:
         Zr = self.soil_root.L_root
         
         ''' to renormalize to per plant basis, soil water storage need to be modified! - matters both for loss and for rain pulse input 
-        e.g., instead of Zr*unit ground area, it's Zr*Ar
+        e.g., instead of Zr*unit ground area, it's Zr*Ar and alpha*Ar
         '''
         Ar = self.soil_root.A_root
         sw = Es_params[0]; sst = Es_params[1]; ETmax = Es_params[2]
 #         gam = n*Zr/alpha; eta = ETmax/(n*Zr); k = Ks/(n*Zr)
-        gam = n*Zr*Ar/alpha; eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
+#         gam = n*Zr*Ar/alpha; eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
+        gam = (n*Zr*Ar)/(alpha*Ar); eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
+        
         sCrit = self.get_sCrit(plc)
         return gam, eta, k, sw, sst, sCrit
     
@@ -216,6 +218,6 @@ class Whole_plant:
         except IndexError: 
             imin = 0
         sigma = 1.0 - (diffP[imax] - diffP[imin])/(P_soil[imax]-P_soil[imin])
-#         plt.plot(P_soil, P_stem); plt.plot(P_soil, P_soil, '--'); plt.plot([P_soil[imin],P_soil[imax]],[P_stem[imin],P_stem[imax]], 'o')
+        plt.plot(P_soil, P_stem); plt.plot(P_soil, P_soil, '--'); plt.plot([P_soil[imin],P_soil[imax]],[P_stem[imin],P_stem[imax]], 'o')
 #         plt.plot(P_soil, diffP); plt.plot([P_soil[imin], P_soil[imax]], [diffP[imin], diffP[imax]], 'o'); plt.show()
         return sigma

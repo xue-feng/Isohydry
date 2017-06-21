@@ -6,7 +6,7 @@ from scipy import stats
 from params_soil import soil_dict
 from SALib.analyze import sobol
 from utility_functions import import_traits_data, get_part
-import matplotlib.ticker as mtick
+# import matplotlib.ticker as mtick
 
 def plot_ind(ax, ind, out, ylims, title=None): 
     ax.plot(ind, out, 'o', color='gray', alpha=0.1, ms=5, mec='None'); # ax.set_title(title)
@@ -63,7 +63,7 @@ def bin_nondimen_groups(data, output1, output2, nbins=12):
         else: binned[i,4] = np.mean(output2[digitized==(i+1)])
     return binned
 
-def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
+def plot_nondimen_samples(sp, VPD, tmax, option):
     beta, delta, kappa, chi, rho, epsilon, tau, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
     beta_bin = bin_nondimen_groups(beta, HR, Assm)
     delta_bin = bin_nondimen_groups(delta, HR, Assm)
@@ -115,7 +115,7 @@ def plot_nondimen_samples(sp='JUNI', VPD=2.0, tmax=180, option='HR'):
     
     plt.tight_layout()
     
-def define_problem(sp='JUNI'):
+def define_problem(sp):
     var_vals = [traits[sp][get_part(v)][v] for v in var_names[:-1]]; var_vals.extend([Rmax])
     problem_bounds = [[min(0.5*v,2.0*v), max(0.5*v,2.0*v)] for v in var_vals]
     problem = {'num_vars': n_vars,'names': var_names,'bounds': problem_bounds}
@@ -138,7 +138,7 @@ def sobol_analysis(sp, VPD, tmax):
     Si_depo[:,3] = Si_A['ST_conf']
     return Si_depo
  
-def verify(sp='JUNI', VPD=2.0, tmax=180):
+def verify(sp, VPD, tmax):
     Si_depo = sobol_analysis(sp, VPD, tmax)      
     plt.figure(figsize=(6,4.5))
     plt.subplot(211)
@@ -147,7 +147,7 @@ def verify(sp='JUNI', VPD=2.0, tmax=180):
     plt.bar(np.arange(len(Si_depo)),Si_depo[:,2], yerr=Si_depo[:,3]); plt.ylim(0,1)
     plt.tight_layout()
 
-def barplot_earlylate(sp='JUNI', VPD=2.0, early=30, late=180):
+def barplot_earlylate(sp, VPD, early, late):
     Si_early = sobol_analysis(sp, VPD, early)
     Si_late = sobol_analysis(sp, VPD, late)
     
@@ -169,7 +169,7 @@ def barplot_earlylate(sp='JUNI', VPD=2.0, early=30, late=180):
     plt.ylim(0,1.2); plt.xlim(-width, np.max(ind)+width*3.0)
     plt.tight_layout()
 
-def barplot_twospecies(VPD=2.0, tmax=30):
+def barplot_twospecies(VPD, tmax):
     Si_juni = sobol_analysis('JUNI', VPD, tmax)
     Si_pine = sobol_analysis('PINE', VPD, tmax)
     
@@ -189,7 +189,7 @@ def barplot_twospecies(VPD=2.0, tmax=30):
     ax.bar(ind+width, Si_pine[iplot,0], width, color='blue', alpha=0.5, edgecolor='white', yerr=Si_pine[iplot,1], error_kw=error_kw)
     ax.set_xticks(ind + width)
     ax.set_xticklabels([])
-    plt.ylim(0,1.2); plt.xlim(-width, np.max(ind)+width*3.0)
+    plt.ylim(0,1.5); plt.xlim(-width, np.max(ind)+width*3.0)
     
     ''' for carbon '''
     ax = plt.subplot(212) 
@@ -198,7 +198,7 @@ def barplot_twospecies(VPD=2.0, tmax=30):
     ax.set_xticks(ind + width)
     ax.set_xticklabels(var_names[iplot], rotation=45)
     print var_names[iplot]
-    plt.ylim(0,1.2); plt.xlim(-width, np.max(ind)+width*3.0)
+    plt.ylim(0,1.5); plt.xlim(-width, np.max(ind)+width*3.0)
     plt.tight_layout()
     
 ## soil conditions ##
@@ -222,9 +222,9 @@ n_vars = len(var_names)
 
 VPD=2.0
 
-barplot_twospecies(tmax=30)
-barplot_twospecies(tmax=180)
-plt.show()
+# barplot_twospecies(VPD=VPD, tmax=60)
+# barplot_twospecies(VPD=VPD, tmax=180)
+# plt.show()
  
 # barplot_earlylate('PINE')
 # barplot_earlylate('JUNI')
@@ -233,6 +233,6 @@ plt.show()
 tmax = 180
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
-plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
-plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
+# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()

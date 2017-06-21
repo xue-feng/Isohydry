@@ -101,7 +101,7 @@ def plot_trajectories(plant, tmax, VPD, newfig=True):
     plt.figure(figsize=(5,5))
     plt.subplot(211)
     for i in range(len(ps)):
-        plt.plot(tRun, ps[i], lw=0.2, color='lightgray')
+        plt.plot(tRun, ps[i], lw=0.2, color='gray', alpha=0.5)
         plt.plot(tRun[ps[i]<=sCrit], ps[i][ps[i]<=sCrit], lw=0.5, color='k')
 #     plt.plot(tRun, ps_mean, lw=1.5, color='k')
     plt.plot(tRun, np.ones(len(tRun))*sst, color='red', ls=':')
@@ -109,7 +109,7 @@ def plot_trajectories(plant, tmax, VPD, newfig=True):
     plt.ylabel('Soil moisture')
     plt.subplot(212)
     for i in range(len(ps)):
-        plt.plot(tRun, assm_cumsum[i], lw=0.2, color='lightgray')
+        plt.plot(tRun, assm_cumsum[i], lw=0.2, color='gray', alpha=0.5)
     plt.plot(tRun, np.mean(assm_cumsum,axis=0), lw=1.0, color='k')
     plt.ylabel('Normalized net assimilation')
     plt.xlabel('Days')
@@ -216,7 +216,7 @@ def plot_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
 
 n_trajectories = 100; dt = 0.1
 # lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
-lam=0.10; alpha=0.010; s1 = sfc; s0 = sst; Amax = 1.0/dt; R = 0.10*Amax
+lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
 
 # plot_trajectories(juni_plant, 180, 2.0, newfig=True)
@@ -224,14 +224,14 @@ plot_trajectories(pine_plant, 180, 2.0, newfig=True)
 plt.show()
 
 
-# plot_sigma_VPD(np.linspace(0.5,4.0,10))
+plot_sigma_VPD(np.linspace(0.5,4.0,10))
 # plt.show()
 
 P_soil_arr=np.linspace(-10,-0.01,1000)
 E_grid = np.zeros((len(P_soil_arr),2))
 for i, psoil in enumerate(P_soil_arr):
-    E_grid[i,0], _ ,_ = pine_plant.flux_solver(psoil, VPD=0.8)
-    E_grid[i,1], _ ,_ = juni_plant.flux_solver(psoil, VPD=3.0)
+    E_grid[i,0], _ ,_ = pine_plant.flux_solver(psoil, VPD=0.85)
+    E_grid[i,1], _ ,_ = juni_plant.flux_solver(psoil, VPD=2.5)
 plt.figure(figsize=(5,4.5))
 plt.plot(-P_soil_arr, E_grid[:,0])
 plt.plot(-P_soil_arr, E_grid[:,1])
