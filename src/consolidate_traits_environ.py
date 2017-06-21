@@ -220,7 +220,7 @@ lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
 
 # plot_trajectories(juni_plant, 180, 2.0, newfig=True)
-plot_trajectories(pine_plant, 180, 2.0, newfig=True)
+# plot_trajectories(pine_plant, 180, 2.0, newfig=True)
 plt.show()
 
 

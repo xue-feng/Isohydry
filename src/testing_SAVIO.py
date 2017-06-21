@@ -28,7 +28,7 @@ n_trajectories = 500; dt = 0.1
 # lam=0.05; alpha=0.010; s1 = sfc; s0 = (sfc+sst)/2.0; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
 # ''' severe conditions, for tmax=30,60,150,180 m2m2 '''
 # lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
-lam=0.10; alpha=0.010; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
+lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax; plc = 0.5
 
 ''' prep for sensitivity analysis '''
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])

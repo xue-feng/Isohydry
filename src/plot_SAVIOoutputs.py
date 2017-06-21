@@ -215,7 +215,7 @@ print sst
 n_trajectories = 500; dt = 0.1
 # lam=0.05; alpha=0.007;  Amax = 1.0/dt; Rmax = 0.10*Amax;
 
-lam=0.10; alpha=0.010; s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax
+lam=0.05; alpha=0.007;s1 = sfc; s0 = sst; Amax = 1.0/dt; Rmax = 0.10*Amax
 ## prep for sensitivity analysis ##
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Rmax'])
 n_vars = len(var_names)
