@@ -9,28 +9,39 @@ import scipy.signal as signal
 import matplotlib.pyplot as plt
 
 class Canopy:
-    def __init__(self, A_canopy, Gs_leaf, c_leaf): 
+    def __init__(self, A_canopy, Gs_leaf, c_leaf, Amax): 
         self.A_canopy = A_canopy                    # canopy area
         self.Gs_leaf = Gs_leaf                  # max Gs as function of VPD, e.g. a in a*np.exp(-b*x)
         self.c_leaf = c_leaf                        # parameter for exponential decay as function of P_leaf
-     
-    def gmax_canopy(self, VPD):
+        self.Amax = Amax*A_canopy                    # in mol/m2/d, need to convert 
+#         self.Amax = Amax*A_canopy/(36000.0*40.5) # need to convert from mol/m2/d to m3/s, per plant
+        
+    def gmax_canopy(self):
 #         gmax_leaf = self.gmax_leaf(VPD)
         gmax_leaf = self.Gs_leaf
         Sd, rhoH2O, Mw = params_constants.Sd, params_constants.rhoH2O, params_constants.Mw
         return gmax_leaf*self.A_canopy*Mw*Sd/(rhoH2O)
     
-    def g_canopy_exponential(self, P_leaf, VPD):
+    def g_canopy_exponential(self, P_leaf):
         # gives canopy conductance g_canopy based on linear decay function 
-        gmax = self.gmax_canopy(VPD)
+        gmax = self.gmax_canopy()
         return gmax*np.exp(self.c_leaf*P_leaf)
     
-    def g_canopy(self, P_leaf, VPD):
+    def g_canopy(self, P_leaf):
         # returns canopy conductance based on specified functional form
-        g = self.g_canopy_exponential(P_leaf, VPD)
+        g = self.g_canopy_exponential(P_leaf)
         return g
     
-
+    def carboxyl_constant(self):
+        ## uses ca = 400 ppm = 400E-6 mol/mol
+        gmax, Amax = self.gmax_canopy(), self.Amax/(36000.0*40.5)
+        return -Amax/(Amax*1.6 - gmax*0.000400)
+    
+    def A(self, P_leaf):
+        gs, k = self.g_canopy(P_leaf), self.carboxyl_constant()
+        A_inst = gs*k*0.000400/(1.6*k+gs)
+        return A_inst*(40.5*36000.0)  #daily assimilation per plant
+    
 class Stem: 
     def __init__(self, L_stem, A_stem, Ksat_stem, P50_stem, a_stem, plc_form=None):
         self.L_stem = L_stem            # length of conducting stem
@@ -132,7 +143,7 @@ class Whole_plant:
         # helper function for solving coupled hydrodynamic system 
         g_soil, g_stem, g_canopy = self.soil_root.g_soil, self.stem.g_stem, self.canopy.g_canopy
         P_baro = params_constants.P_baro
-        return (g_canopy(P_leaf, VPD)*(VPD/P_baro) - ET, \
+        return (g_canopy(P_leaf)*(VPD/P_baro) - ET, \
                 g_stem(P_stem)*(P_stem-P_leaf) - ET, \
                 g_soil(P_soil)*g_stem(P_stem)/(g_soil(P_soil)+g_stem(P_stem)) * (P_soil-P_stem) - ET ) 
 #                 g_soil(P_soil)*(P_soil-P_stem) - ET )        
@@ -221,3 +232,4 @@ class Whole_plant:
         plt.plot(P_soil, P_stem); plt.plot(P_soil, P_soil, '--'); plt.plot([P_soil[imin],P_soil[imax]],[P_stem[imin],P_stem[imax]], 'o')
 #         plt.plot(P_soil, diffP); plt.plot([P_soil[imin], P_soil[imax]], [diffP[imin], diffP[imax]], 'o'); plt.show()
         return sigma
+    

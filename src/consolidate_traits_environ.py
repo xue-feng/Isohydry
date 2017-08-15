@@ -1,4 +1,4 @@
-from utility_functions import import_traits_data, initialize_plant, simulate_ps_t, get_part, initialize_generic_plant
+from utility_functions import import_traits_data, initialize_plant, simulate_ps_t, simulate_ps_t_nonlinearized
 from params_soil import soil_dict
 import numpy as np
 import matplotlib.pyplot as plt
@@ -66,7 +66,7 @@ def plot_flux_VPD_lines(plant, P_soil_arr, VPD_arr, g_size=10):
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
 
-def get_relGnet(assm):
+def get_relGnet(assm, Amax, R):
     return np.mean(np.sum(assm, axis=1))/((Amax-R)*np.shape(assm)[1]) 
 
 def simulate_intensity_duration(plant, int_range, dur_range):
@@ -82,11 +82,12 @@ def simulate_intensity_duration(plant, int_range, dur_range):
             # environmental, units in meters
             Avpd = plant.canopy.gmax_canopy(vpd)
             gam,eta,k,sw,sst,sCrit=plant.get_derived_params(vpd, s, alpha, n, Ks, sfc) 
+            Amax = plant.canopy.Amax; R = 0.1*Amax
             ps, assm = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
             # probability of being below sCrit over season
             psCrit_grid[i,j] = get_psCrit(ps, sCrit)
             # normalized assm with respect to max net assimilation 
-            Gnet_grid[i,j] = get_relGnet(assm)*(Avpd/Aref)
+            Gnet_grid[i,j] = get_relGnet(assm, Amax, R)*(Avpd/Aref)
     return psCrit_grid, Gnet_grid
 
 def plot_trajectories(plant, tmax, VPD, newfig=True): 
@@ -94,25 +95,30 @@ def plot_trajectories(plant, tmax, VPD, newfig=True):
         plt.figure(figsize=(6,8))
     tRun =  np.arange(0,tmax+dt,dt)
     gam, eta, k, sw, sst, sCrit = plant.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc=0.50)
-    ps, assm = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
+    Amax = plant.canopy.Amax; R = 0.1*Amax
+    
+#     ps, assm = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
+    ps, assm = simulate_ps_t_nonlinearized(n_trajectories, tRun, dt, s0, plant, VPD, lam, alpha)
+    
     ps_mean = np.mean(ps, axis=0)
     assm_cumsum = np.cumsum(assm, axis=1)/((Amax-R)*np.shape(assm)[1]*dt)
     
     plt.figure(figsize=(5,5))
-    plt.subplot(211)
+    plt.subplot(211); plt.title(str(get_psCrit(ps,sCrit)))
     for i in range(len(ps)):
-        plt.plot(tRun, ps[i], lw=0.2, color='gray', alpha=0.5)
-        plt.plot(tRun[ps[i]<=sCrit], ps[i][ps[i]<=sCrit], lw=0.5, color='k')
+        plt.plot(tRun, ps[i], lw=0.2, color='darkgray')
+        plt.plot(tRun[ps[i]<=sCrit], ps[i][ps[i]<=sCrit], lw=1.5, color='k')
 #     plt.plot(tRun, ps_mean, lw=1.5, color='k')
     plt.plot(tRun, np.ones(len(tRun))*sst, color='red', ls=':')
     plt.plot(tRun, np.ones(len(tRun))*sCrit, color='red', ls='--')
     plt.ylabel('Soil moisture')
-    plt.subplot(212)
+    plt.subplot(212); plt.title(str(get_relGnet(assm, Amax, R)))
     for i in range(len(ps)):
-        plt.plot(tRun, assm_cumsum[i], lw=0.2, color='gray', alpha=0.5)
-    plt.plot(tRun, np.mean(assm_cumsum,axis=0), lw=1.0, color='k')
+        plt.plot(tRun, assm_cumsum[i], lw=0.2, color='darkgray')
+    plt.plot(tRun, np.mean(assm_cumsum,axis=0), lw=1.5, color='k')
     plt.ylabel('Normalized net assimilation')
     plt.xlabel('Days')
+#     plt.ylim(0,0.5)
     plt.tight_layout()
     plt.show()
 
@@ -175,18 +181,20 @@ def get_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
         tRun = np.arange(0,tmax+dt,dt)
         ## isohydric performance
         gam,eta,k,sw,sst,sCrit=plant_iso.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc)
+        Amax = plant.canopy.Amax; R = 0.1*Amax
         ps, assm = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
         metrics_iso[i,0] = get_psCrit(ps, sCrit)
-        metrics_iso[i,1] = get_relGnet(assm) *(Avpd_iso/Aref_iso)
+        metrics_iso[i,1] = get_relGnet(assm, Amax, R) *(Avpd_iso/Aref_iso)
 #         for k in range(len(ps[:,0])):
 #             plt.plot(tRun, ps[k], lw=0.5, color='gray')
 #         plt.hlines(sw, 0, tmax); plt.hlines(sst, 0, tmax); plt.hlines(sCrit, 0, tmax, 'red')
 #         plt.show()
         ## anisohydric performance
         gam,eta,k,sw,sst,sCrit=plant_aniso.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc)
+        Amax = plant.canopy.Amax; R = 0.1*Amax
         ps, assm = simulate_ps_t(n_trajectories, tRun, dt, s0, lam, gam, eta, k, sw, sst, s1, Amax, R)
         metrics_aniso[i,0] = get_psCrit(ps, sCrit)
-        metrics_aniso[i,1] = get_relGnet(assm) *(Avpd_aniso/Aref_aniso)
+        metrics_aniso[i,1] = get_relGnet(assm, Amax, R) *(Avpd_aniso/Aref_aniso)
 #         for k in range(len(ps[:,0])):
 #             plt.plot(tRun, ps[k], lw=0.5, color='gray')
 #         plt.hlines(sw, 0, tmax); plt.hlines(sst, 0, tmax); plt.hlines(sCrit, 0, tmax, 'red')
@@ -214,17 +222,16 @@ def plot_iso_aniso_performance(sp, VPD, tmax_arr, iso_xf, aniso_xf, plc=0.8):
 # visualize pine and juniper performance under intensity and duration 
 # performance gauged by hydraulic risk and reduction in Assimilation
 
-n_trajectories = 100; dt = 0.1
+n_trajectories = 50; dt = 0.1 #dt = 0.1
 # lam=0.15; alpha=0.010; s1 = sfc; s0 = 0.5; Amax = 1.0/dt; R = 0.10*Amax
-lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; Amax = 1.0/dt; R = 0.10*Amax
+lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; # Amax = 1.0/dt; R = 0.10*Amax
 gridsize=10; int_range=np.linspace(0.5,4.0,gridsize); dur_range=np.linspace(30,180,gridsize)
 
-# plot_trajectories(juni_plant, 180, 2.0, newfig=True)
+plot_trajectories(juni_plant, 180, 2.0, newfig=True)
 # plot_trajectories(pine_plant, 180, 2.0, newfig=True)
 plt.show()
 
-
-plot_sigma_VPD(np.linspace(0.5,4.0,10))
+# plot_sigma_VPD(np.linspace(0.5,4.0,10))
 # plt.show()
 
 P_soil_arr=np.linspace(-10,-0.01,1000)
@@ -240,8 +247,8 @@ plt.ylabel('Transpiration')
 plt.xscale('log')
 
 plt.figure(figsize=(5,4.5))
-plot_flux_VPD_lines(juni_plant, P_soil_arr=np.linspace(-2,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
-plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-2,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
+plot_flux_VPD_lines(juni_plant, P_soil_arr=np.linspace(-3.0,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
+plot_flux_VPD_lines(pine_plant, P_soil_arr=np.linspace(-3.0,-0.5,2), VPD_arr=np.linspace(0.5,4.0,50))
 plt.show()
 
 # gridsize=10; int_range=np.linspace(0,3.0,gridsize); dur_range=np.linspace(0,180,gridsize)
@@ -342,3 +349,4 @@ derive sigma and Pg12-P50 metrics for trait changes -- INTERNAL CONSISTENCY
 think about performance implications (different drought regimes), for more species (MAHERALI?)
 KEY: INCORPORATE SOIL WATER LEAKAGE EVEN AFTER STOMATAL CLOSURE!!!
 GET A FEW MORE SPECIES FOR TRAITS '''
+

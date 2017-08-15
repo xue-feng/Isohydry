@@ -9,15 +9,20 @@ from utility_functions import import_traits_data, get_part
 # import matplotlib.ticker as mtick
 
 def plot_ind(ax, ind, out, ylims, title=None): 
-    ax.plot(ind, out, 'o', color='gray', alpha=0.1, ms=5, mec='None'); # ax.set_title(title)
+    ax.plot(ind, out, 'o', color='gray', alpha=0.1, ms=2, mec='None'); # ax.set_title(title)
     spcorr, corr_pval = stats.spearmanr(ind,out); print spcorr, corr_pval
+#     ax.annotate(str(np.round(spcorr,3)), xy=(0.02,0.9), xycoords='axes fraction', fontsize=8)
+    
 #     if corr_pval<0.05:
-#         ax.annotate(r'$r_{s}=$'+str(np.round(spcorr,3))+', '+r'$p=$%.2E' %corr_pval, xy=(0.02,0.9), xycoords='axes fraction', fontsize=8)
+#     ax.annotate(r'$r_{s}=$'+str(np.round(spcorr,3))+', '+r'$p=$%.2E' %corr_pval, xy=(0.02,0.9), xycoords='axes fraction', fontsize=8)
     ax.set_ylim(ylims[0], ylims[1])
     
 def plot_summary_ind(ax, x,y,xerr,yerr ):
     ax.errorbar(x, y, yerr=yerr, fmt='o', mec='None')
-       
+
+def plot_bin_boxplot(ax, data):
+    ax.boxplot(data, showfliers=False)
+    
 def get_nondimen_indices(sp, VPD, tmax):
     with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlant_outcomes.pickle', 'rb') as handle:
         Y = pickle.load(handle)
@@ -46,9 +51,13 @@ def get_nondimen_indices(sp, VPD, tmax):
     Assm = Y[:,1]
     return beta, delta, kappa, chi, rho, epsilon, tau, HR, Assm
 
-def bin_nondimen_groups(data, output1, output2, nbins=12):
+def digitize_data(data, nbins=12):
     bins = np.linspace(np.min(data), np.max(data), nbins)
     digitized = np.digitize(data, bins)
+    return digitized
+
+def bin_nondimen_groups(data, output1, output2, nbins=12):
+    digitized = digitize_data(data, nbins)
     binned = np.zeros((nbins,6))
     for i in range(nbins):
         binned[i,0] = np.mean(data[digitized==(i+1)])
@@ -113,7 +122,23 @@ def plot_nondimen_samples(sp, VPD, tmax, option):
     ax.yaxis.set_ticklabels([])
     _, labels = plt.xticks(); plt.setp(labels, rotation=45)
     
-    plt.tight_layout()
+#     plt.tight_layout()
+
+def plot_nondimen_boxplot(sp, VPD, tmax, option):
+    beta, delta, kappa, chi, rho, epsilon, tau, HR, Assm = get_nondimen_indices(sp, VPD, tmax)
+    
+    
+    fig = plt.figure(figsize=(15,2.5));# plt.suptitle(suptitle)
+    ax = fig.add_subplot(171)
+
+    beta_digi = digitize_data(rho)   
+    beta_digilist = []
+    for i in range(12): 
+        beta_digilist.append(HR[beta_digi==i])
+    plt.boxplot(beta_digilist)
+    plt.show()
+
+    print 'pause'
     
 def define_problem(sp):
     var_vals = [traits[sp][get_part(v)][v] for v in var_names[:-1]]; var_vals.extend([Rmax])
@@ -236,3 +261,6 @@ plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
 # plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
 # plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()
+
+# tmax=180
+# plot_nondimen_boxplot('JUNI', VPD=VPD, tmax=tmax, option='HR')
