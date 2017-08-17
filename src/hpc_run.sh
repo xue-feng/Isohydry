@@ -14,7 +14,7 @@
 ## Command(s) to run:
 git checkout master
 source ~/VirtualEnvirons/sobolenv/bin/activate
-x=$(python testing_SAVIO.py)
+x=$(python testing_SAVIO2.py)
 DATE=`date +%Y-%m-%d:%H:%M:%S`
 TITLESTR="SOBOL_$DATE"
 sendmail xue.feng@berkeley.edu << EOF
