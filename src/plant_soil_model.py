@@ -9,21 +9,21 @@ import scipy.signal as signal
 import matplotlib.pyplot as plt
 
 class Canopy:
-    def __init__(self, A_canopy, Gs_leaf, c_leaf, Amax): 
-        self.A_canopy = A_canopy                    # canopy area
-        self.Gs_leaf = Gs_leaf                  # max Gs as function of VPD, e.g. a in a*np.exp(-b*x)
+    def __init__(self, A_canopy, Gs_leaf, c_leaf, Amax, rho): 
+        self.A_canopy = A_canopy                    # canopy area, m2
+        self.Gs_leaf = Gs_leaf                      # max leaf, in mol/m2/s
         self.c_leaf = c_leaf                        # parameter for exponential decay as function of P_leaf
-        self.Amax = Amax*A_canopy                    # in mol/m2/d, need to convert 
-#         self.Amax = Amax*A_canopy/(36000.0*40.5) # need to convert from mol/m2/d to m3/s, per plant
+        self.Amax = Amax                            # in mol/m2/d, need to convert 
+        self.rho = rho
         
     def gmax_canopy(self):
-#         gmax_leaf = self.gmax_leaf(VPD)
+        # maximum canopy conductance per day, m3/d
         gmax_leaf = self.Gs_leaf
         Sd, rhoH2O, Mw = params_constants.Sd, params_constants.rhoH2O, params_constants.Mw
         return gmax_leaf*self.A_canopy*Mw*Sd/(rhoH2O)
     
     def g_canopy_exponential(self, P_leaf):
-        # gives canopy conductance g_canopy based on linear decay function 
+        # gives canopy conductance g_canopy based on exponential decay function 
         gmax = self.gmax_canopy()
         return gmax*np.exp(self.c_leaf*P_leaf)
     
@@ -33,15 +33,38 @@ class Canopy:
         return g
     
     def carboxyl_constant(self):
+        ## gmax and Amax should be normalized to the same units, which k will also have
+        ## since P_leaf dependence is only resolved for gs at the canopy level, everything will be m3/d
+        
+        ## Amax inputed as mol/m2/d
         ## uses ca = 400 ppm = 400E-6 mol/mol
-        gmax, Amax = self.gmax_canopy(), self.Amax/(36000.0*40.5)
-        return -Amax/(Amax*1.6 - gmax*0.000400)
+        Sd, CO2conc = params_constants.Sd, params_constants.CO2conc
+        Mco2, rhoCO2 = params_constants.Mco2, params_constants.rhoCO2
+        
+        # do we HAVE to work in units of mol/m2/s???
+        gmax, Amax = self.Gs_leaf, self.Amax/Sd
+#         ''' check if this can be done in m3/d -- NOPE! '''
+#         gmax,Amax = self.gmax_canopy(), self.Amax*self.A_canopy*Mco2/rhoCO2
+        return -Amax*gmax/(Amax*1.6 - gmax*CO2conc)
+    
+    def R(self):
+        return self.rho*self.Amax
     
     def A(self, P_leaf):
-        gs, k = self.g_canopy(P_leaf), self.carboxyl_constant()
-        A_inst = gs*k*0.000400/(1.6*k+gs)
-        return A_inst*(40.5*36000.0)  #daily assimilation per plant
-    
+        # outputs daily assimilation 
+        Sd, CO2conc = params_constants.Sd, params_constants.CO2conc
+        Mw, rhoH2O = params_constants.Mw, params_constants.rhoH2O
+        
+        ## again, mol/m2/s
+        gs, k = self.g_canopy(P_leaf)*rhoH2O/(self.A_canopy*Mw*Sd), self.carboxyl_constant()
+        Assm = gs*k*CO2conc/(1.6*k + gs) 
+        return Assm * Sd  #daily assimilation per plant, mol/m2/d
+
+#         ''' check if this can be done in m3/d -- NOPE!'''
+#         gs, k = self.g_canopy(P_leaf), self.carboxyl_constant()
+#         Assm = gs*k*CO2conc/(1.6*k + gs)
+#         return Assm
+        
 class Stem: 
     def __init__(self, L_stem, A_stem, Ksat_stem, P50_stem, a_stem, plc_form=None):
         self.L_stem = L_stem            # length of conducting stem
@@ -138,7 +161,6 @@ class Whole_plant:
     def soil(self, soil_object):
         self._soil =  soil_object
     
-    
     def flux_solvent(self, (ET, P_stem, P_leaf), P_soil, VPD):
         # helper function for solving coupled hydrodynamic system 
         g_soil, g_stem, g_canopy = self.soil_root.g_soil, self.stem.g_stem, self.canopy.g_canopy
@@ -180,7 +202,6 @@ class Whole_plant:
         for i, si in enumerate(s): 
             Flux[i,:] = self.flux_solver_s(si, VPD, Flux_init)
             P_soil[i] = self.soil.P_soil_solver(si)  
-#         return Flux, P_soil
         return Flux[::-1, :], P_soil[::-1]
     
     def get_fluxes_scalar(self, VPD, s):
@@ -198,18 +219,18 @@ class Whole_plant:
         sst = s[np.where(E>sst_th*Emax)[0][0]]
         sw = s[np.where(E>sw_th*Emax)[0][0]]
         return sw, sst, Emax
-    
-    def get_derived_params(self, VPD, s, alpha, n, Ks, sfc, plc=0.80): 
+        
+    def get_derived_params(self, VPD, s, alpha, n, Ks, sfc, plc): 
         Es_params = self.get_Es_params(VPD, s)
         Zr = self.soil_root.L_root
         
-        ''' to renormalize to per plant basis, soil water storage need to be modified! - matters both for loss and for rain pulse input 
+        ''' to renormalize to per plant basis, soil water storage need to be modified! 
+        matters both for loss and for rain pulse input 
         e.g., instead of Zr*unit ground area, it's Zr*Ar and alpha*Ar
         '''
         Ar = self.soil_root.A_root
         sw = Es_params[0]; sst = Es_params[1]; ETmax = Es_params[2]
 #         gam = n*Zr/alpha; eta = ETmax/(n*Zr); k = Ks/(n*Zr)
-#         gam = n*Zr*Ar/alpha; eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
         gam = (n*Zr*Ar)/(alpha*Ar); eta = ETmax/(n*Zr*Ar); k = Ks/(n*Zr*Ar)
         
         sCrit = self.get_sCrit(plc)
@@ -220,7 +241,6 @@ class Whole_plant:
         # find curvature and slope
         diffP = np.ma.masked_greater(P_soil - P_stem, 10) # differential should not be greater than this -- cavitation limits
         # to make diffP even spaced 
-#         dP_p1 = diffP[:-1] - diffP[1:]; dP_p2 = dP_p1[:-1] - dP_p1[1:]
         dP_p1 = np.diff(diffP); dP_p2 = np.diff(dP_p1)
         kappa = dP_p2/(1+dP_p1[:-1]**2)**(3.0/2.0) # for curvature
         imax = signal.argrelmax(diffP)[0][-1]
