@@ -37,7 +37,7 @@ def evaluate_model(args):
         plant_traits = p_vals
         generic_plant = initialize_generic_plant(var_names, plant_traits, soil_type)
         sCrit = generic_plant.get_sCrit(plc)
-        Amax, R = generic_plant.canopy.Amax, generic_plant.canopy.R
+        Amax, R = generic_plant.canopy.Amax, generic_plant.canopy.R()
         
         ps, assm = simulate_ps_t_nonlinearized(n_trajectories, tRun, dt, s0, generic_plant, VPD, lam, alpha)
     
