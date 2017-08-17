@@ -33,7 +33,6 @@ def evaluate_model(args):
     Y = np.zeros((len(param_values),2))
     tRun = np.arange(0,tmax+dt,dt)
     for i, p_vals in enumerate(param_values):
-        print i
         plant_traits = p_vals
         generic_plant = initialize_generic_plant(var_names, plant_traits, soil_type)
         sCrit = generic_plant.get_sCrit(plc)
@@ -43,6 +42,7 @@ def evaluate_model(args):
     
         Y[i,0] = get_psCrit(ps, sCrit)
         Y[i,1] = get_relGnet(assm, Amax, R, tmax)  
+        print i, Y[i]
     return Y
 
 def generate_samples(sp, n_runs, VPD, tmax):

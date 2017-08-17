@@ -39,8 +39,8 @@ class Canopy:
         ## Amax inputed as mol/m2/d
         ## uses ca = 400 ppm = 400E-6 mol/mol
         Sd, CO2conc = params_constants.Sd, params_constants.CO2conc
-        Mco2, rhoCO2 = params_constants.Mco2, params_constants.rhoCO2
-        
+#         Mco2, rhoCO2 = params_constants.Mco2, params_constants.rhoCO2
+      
         # do we HAVE to work in units of mol/m2/s???
         gmax, Amax = self.Gs_leaf, self.Amax/Sd
 #         ''' check if this can be done in m3/d -- NOPE! '''
