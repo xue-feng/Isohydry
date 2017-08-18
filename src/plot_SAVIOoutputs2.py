@@ -75,7 +75,7 @@ def plot_nondimen_samples(sp, VPD, tmax, option):
     tau_bin = bin_nondimen_groups(tau, HR, Assm)
     
     ''' plotting sample results '''
-    if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.01, 0.11)
+    if option=='CA': out = Assm; group_ind =(4,5); suptitle = 'C assimilation: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims = (-0.1, 1.0)
     elif option=='HR': out = HR; group_ind =(2,3); suptitle = 'Hydraulic risk: %s at %s kPa and %s days'%(sp, VPD, tmax); ylims=(-0.1,1.0)
     
     fig = plt.figure(figsize=(15,2.5));# plt.suptitle(suptitle)
@@ -201,11 +201,11 @@ barplot_twospecies(VPD=VPD, tmax=60)
 barplot_twospecies(VPD=VPD, tmax=180)
 plt.show()
 
-tmax = 60
+tmax = 180
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='HR')
 plot_nondimen_samples('JUNI', VPD=VPD, tmax=tmax, option='CA')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
-# plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='HR')
+plot_nondimen_samples('PINE', VPD=VPD, tmax=tmax, option='CA')
 plt.show()
 
 # tmax=180

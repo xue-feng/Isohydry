@@ -20,7 +20,7 @@ lam=0.05; alpha=0.007; plc = 0.5
 
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Amax','rho'])
 n_vars = len(var_names)
-VPD = 2.0; n_runs=1000
+VPD = 2.0; n_runs=2000
     
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
@@ -75,9 +75,9 @@ def sample_main(sp, VPD, tmax):
     t1=time.time(); sys.stdout.write('%0.2f minutes \n' %((t1-t0)/60.0) ) 
     
     ''' sample storage '''
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlantNL_outcomes.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlantNL2000_outcomes.pickle', 'wb') as handle:
         pickle.dump(Y, handle)
-    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlantNL_params.pickle', 'wb') as handle:
+    with open('../Si_'+sp+'_vpd'+str(int(VPD))+'_tmax'+str(tmax)+'_perPlantNL2000_params.pickle', 'wb') as handle:
         pickle.dump(params, handle)
 
 if __name__ == '__main__':

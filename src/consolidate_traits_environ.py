@@ -116,7 +116,7 @@ n_trajectories = 50; dt = 1.0
 lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; 
 
 plot_trajectories(juni_plant, 180, 2.0, newfig=True)
-# plot_trajectories(pine_plant, 180, 2.0, newfig=True)
+plot_trajectories(pine_plant, 180, 2.0, newfig=True)
 plt.show()
 
 plot_sigma_VPD(np.linspace(0.5,4.0,10))
