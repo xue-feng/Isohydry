@@ -128,20 +128,20 @@ def sobol_analysis(sp, VPD, tmax):
         Y = pickle.load(handle)
     # perform analysis
     problem = define_problem(sp)
-    Si_A = sobol.analyze(problem, Y[:,1], calc_second_order=False, print_to_console=True)
-    try: Si_H = sobol.analyze(problem, Y[:,0], calc_second_order=False, print_to_console=True)
+    Si_A = sobol.analyze(problem, Y[:,1], calc_second_order=True, print_to_console=True)
+    try: Si_H = sobol.analyze(problem, Y[:,0], calc_second_order=True, print_to_console=True)
     except: pass
 
     Si_depo = np.zeros((n_vars, 4))
-#     Si_depo[:,0] = Si_H['ST']
-#     Si_depo[:,1] = Si_H['ST_conf']
-#     Si_depo[:,2] = Si_A['ST']
-#     Si_depo[:,3] = Si_A['ST_conf']
+    Si_depo[:,0] = Si_H['ST']
+    Si_depo[:,1] = Si_H['ST_conf']
+    Si_depo[:,2] = Si_A['ST']
+    Si_depo[:,3] = Si_A['ST_conf']
     
-    Si_depo[:,0] = Si_H['S1']
-    Si_depo[:,1] = Si_H['S1_conf']
-    Si_depo[:,2] = Si_A['S1']
-    Si_depo[:,3] = Si_A['S1_conf']
+#     Si_depo[:,0] = Si_H['S1']
+#     Si_depo[:,1] = Si_H['S1_conf']
+#     Si_depo[:,2] = Si_A['S1']
+#     Si_depo[:,3] = Si_A['S1_conf']
     return Si_depo
 
 def barplot_twospecies(VPD, tmax):
@@ -198,7 +198,7 @@ VPD = 2.0; n_runs=1000
 
 
 barplot_twospecies(VPD=VPD, tmax=60)
-# barplot_twospecies(VPD=VPD, tmax=180)
+barplot_twospecies(VPD=VPD, tmax=180)
 plt.show()
 
 tmax = 60
