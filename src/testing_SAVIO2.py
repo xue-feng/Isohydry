@@ -20,7 +20,7 @@ lam=0.05; alpha=0.007; plc = 0.5
 
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Amax','rho'])
 n_vars = len(var_names)
-VPD = 2.0; n_runs=1000
+VPD = 2.0; n_runs=10
     
 def get_psCrit(ps, sCrit):
     return len(ps[ps<sCrit])/float(np.shape(ps)[0]*np.shape(ps)[1])
