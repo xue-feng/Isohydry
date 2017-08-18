@@ -69,7 +69,7 @@ def plot_trajectories(plant, tmax, VPD, newfig=True, nonlinear=True):
         plt.figure(figsize=(6,8))
     tRun =  np.arange(0,tmax+dt,dt)
     gam, eta, k, sw, sst, sCrit = plant.get_derived_params(VPD, s, alpha, n, Ks, sfc, plc=0.50)
-    Amax = plant.canopy.Amax; R = plant.canopy.R
+    Amax = plant.canopy.Amax; R = plant.canopy.R()
     
     if nonlinear: 
         ps, assm = simulate_ps_t_nonlinearized(n_trajectories, tRun, dt, s0, plant, VPD, lam, alpha)
@@ -112,9 +112,8 @@ def initialize_modified_plant(sp, soil_type, part_name, trait_name, trait_val):
     plant_modified = initialize_plant(sp, traits_modified, soil_type)
     return plant_modified
 
-n_trajectories = 50
+n_trajectories = 50; dt = 1.0
 lam=0.05; alpha=0.007; s1 = sfc; s0 = sst; 
-gridsize=10; dt = 0.1 
 
 plot_trajectories(juni_plant, 180, 2.0, newfig=True)
 # plot_trajectories(pine_plant, 180, 2.0, newfig=True)

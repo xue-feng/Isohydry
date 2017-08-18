@@ -15,7 +15,7 @@ s = np.hstack((np.linspace(smin,sst,500), np.linspace(sst+0.001,1.0,100)))
 s0 = sst
 
 traits = import_traits_data()
-n_trajectories = 100; dt = 0.1
+n_trajectories = 100; dt = 1.0
 lam=0.05; alpha=0.007; plc = 0.5
 
 var_names = np.array(['A_canopy','Gs_leaf','c_leaf','L_stem','A_stem','Ksat_stem','a_stem','P50_stem','L_root','A_root','Amax','rho'])
@@ -48,7 +48,7 @@ def evaluate_model(args):
 def generate_samples(sp, n_runs, VPD, tmax):
     problem=define_problem(sp)
     # generate samples
-    param_values = saltelli.sample(problem, n_runs, calc_second_order=False); print len(param_values)
+    param_values = saltelli.sample(problem, n_runs, calc_second_order=True); print len(param_values)
     
 #     ''' for debuggin '''
 #     evaluate_model((param_values, VPD, tmax))
@@ -83,8 +83,8 @@ def sample_main(sp, VPD, tmax):
 if __name__ == '__main__':
 #     sample_main('JUNI', tmax=30)
 #     sample_main('PINE', tmax=30)
-#     sample_main('JUNI', VPD=2.0, tmax=180)
-#     sample_main('PINE', VPD=2.0, tmax=180)
+    sample_main('JUNI', VPD=2.0, tmax=180)
+    sample_main('PINE', VPD=2.0, tmax=180)
     sample_main('JUNI', VPD=2.0, tmax=60)
     sample_main('PINE', VPD=2.0, tmax=60)
 #     sample_main('JUNI', tmax=150)
