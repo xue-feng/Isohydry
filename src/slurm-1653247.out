@@ -1,0 +1,93 @@
+Already on 'master'
+M	src/plant_soil_model.pyc
+D	src/slurm-1494042.out
+D	src/slurm-1494053.out
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The number of calls to function has reached maxfev = 800.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/DroughtSA/src/plant_soil_model.py:84: RuntimeWarning: overflow encountered in exp
+  return gmax*(1.0-1.0/(1.0+np.exp(self.a_stem*(P_stem - self.P50_stem) )))
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The number of calls to function has reached maxfev = 800.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/DroughtSA/src/plant_soil_model.py:84: RuntimeWarning: overflow encountered in exp
+  return gmax*(1.0-1.0/(1.0+np.exp(self.a_stem*(P_stem - self.P50_stem) )))
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The number of calls to function has reached maxfev = 800.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/DroughtSA/src/plant_soil_model.py:84: RuntimeWarning: overflow encountered in exp
+  return gmax*(1.0-1.0/(1.0+np.exp(self.a_stem*(P_stem - self.P50_stem) )))
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/VirtualEnvirons/sobolenv/lib/python2.7/site-packages/scipy/optimize/minpack.py:161: RuntimeWarning: The number of calls to function has reached maxfev = 800.
+  warnings.warn(msg, RuntimeWarning)
+/global/home/users/xuefeng/DroughtSA/src/plant_soil_model.py:84: RuntimeWarning: overflow encountered in exp
+  return gmax*(1.0-1.0/(1.0+np.exp(self.a_stem*(P_stem - self.P50_stem) )))
+slurmstepd: error: *** JOB 1653247 ON n0080.savio2 CANCELLED AT 2017-08-17T14:54:07 DUE TO TIME LIMIT ***
